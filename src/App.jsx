@@ -7,15 +7,17 @@ function App() {
 
   return (
     <>
-      <header>
+      <div className='gFrame'>
+        <header>
 
-      </header>
-      <main>  
-        <Outlet/>
-      </main>
-      <footer>
+        </header>
+        <main>  
+          <Outlet/>
+        </main>
+        <footer>
 
-      </footer>
+        </footer>
+      </div>
     </>
   )
 }

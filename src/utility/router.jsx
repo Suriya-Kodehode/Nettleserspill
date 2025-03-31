@@ -11,7 +11,7 @@ const router = createBrowserRouter ([
         errorElement: <p>Error occurred</p>,
         children: [
             {
-                indext: true,
+                index: true,
                 element: <Start/>
             },
             {
@@ -19,6 +19,10 @@ const router = createBrowserRouter ([
                 element: <Game/>
             }
         ]
+    },
+    {
+        path:"*",
+        element: <p>Page not found</p>
     }
 ])
 
