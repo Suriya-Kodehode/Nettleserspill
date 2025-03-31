@@ -6,12 +6,13 @@ function Start() {
 
     return (
         <>
-            <div>
-                <h1>Tower Defense</h1>
-
-                <Link to="/game">
-                    <button>Example link to game page</button>
-                </Link>
+            <div className={styles.container}>
+                <div className={styles.box}>
+                    <h1>Tower Defense</h1>
+                    <Link to="/game">
+                        <button>START</button>
+                    </Link>
+                </div>
             </div>
         </>
     )

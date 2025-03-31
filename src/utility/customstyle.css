@@ -1,6 +1,6 @@
 :root {
     --darkmode-background: #242424;
-    --darkmode-text: #ffff;
+    --darkmode-text: rgba(255, 255, 255, 0.87);
 
     --lightmode-background: #f4f4f4;
     --lightmode-text: #3333;
