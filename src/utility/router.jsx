@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 
 import Start from "../pages/start.jsx";
 import Game from "../pages/game.jsx";
@@ -12,6 +12,10 @@ const router = createBrowserRouter ([
         children: [
             {
                 index: true,
+                element: <Navigate to="/start"/>
+            },
+            {
+                path: "/start",
                 element: <Start/>
             },
             {
