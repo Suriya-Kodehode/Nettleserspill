@@ -7,5 +7,34 @@
     --lightmode-text: #3333;
     /* /Examples */
 
-    
+    /* customized css variables */
+    --balloon-vs-monkey: url('/images/background/Balloon vs monkey.svg');
+    --lightgreen: #66FF99;    
+}
+
+/* Customize dowloaded fonts */
+@font-face {
+    font-family: 'YangBagus';
+    src: url(/fonts/YangBagus-DYMX9.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'YangBagusP';
+    src: url(/fonts/YangBagus-pgq61.otf) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Background for /start page */
+.startBG {
+    background: var(--balloon-vs-monkey);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Background for /game page */
+.gameBG {
+    background: #f2f2f2;
 }

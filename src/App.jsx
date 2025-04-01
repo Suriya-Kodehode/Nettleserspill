@@ -1,12 +1,15 @@
 import { Outlet } from 'react-router-dom';
 
 import './App.css'
+import './utility/customstyle.css'
+import { BackgroundProvider } from './utility/bgProvider.jsx';
 
 function App() {
 
 
   return (
-    <>
+    <BackgroundProvider>
+      <>
       <div className='gFrame'>
         <header>
 
@@ -19,6 +22,7 @@ function App() {
         </footer>
       </div>
     </>
+    </BackgroundProvider>
   )
 }
 

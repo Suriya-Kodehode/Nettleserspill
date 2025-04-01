@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 
 import Start from "../pages/start.jsx";
@@ -12,7 +13,7 @@ const router = createBrowserRouter ([
         children: [
             {
                 index: true,
-                element: <Navigate to="/start"/>
+                element: <Navigate to="/start"/> // <- path as "/" will always be redirected to "/start"
             },
             {
                 path: "/start",

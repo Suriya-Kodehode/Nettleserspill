@@ -10,7 +10,7 @@ function Start() {
                 <div className={styles.box}>
                     <h1>Tower Defense</h1>
                     <Link to="/game">
-                        <button>START</button>
+                        <p>START</p>
                     </Link>
                 </div>
             </div>
