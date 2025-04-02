@@ -1,6 +1,7 @@
 .mapContainer {
+  background-color: black;
 }
 
 .map {
-  width: 80%;
+  width: 70%;
 }
