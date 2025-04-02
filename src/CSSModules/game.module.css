@@ -1,7 +1,6 @@
 .mapContainer {
-  position: absolute;
-  background-image: url("/images/maps/Dirt.png");
-  background-size: contain;
-  width: 100%;
-  height: 30em;
+}
+
+.map {
+  width: 80%;
 }

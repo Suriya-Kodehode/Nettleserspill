@@ -5,7 +5,7 @@ function Game() {
     <>
       <div>
         <div className={styles.mapContainer}>
-          {/* <img src="/images/maps/Easy map.png" alt="" /> */}
+          <img src="/images/maps/map.png" alt="" className={styles.map} />
         </div>
       </div>
     </>
