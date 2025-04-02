@@ -1,0 +1,10 @@
+.mapContainer {
+  position: absolute;
+  background-image: url("/images/maps/EasyMap.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 40%;
+  height: 30em;
+  left: 30%;
+  top: 10%;
+}

@@ -1,15 +1,15 @@
-import styles from '../CSSModules/game.module.css'
+import styles from "../CSSModules/game.module.css";
 
 function Game() {
-
-    return (
-        <>
-            <div>
-                <h2>Example page</h2>
-                <p>this is where the game will be</p>
-            </div>
-        </>
-    )
+  return (
+    <>
+      <div>
+        <div className={styles.mapContainer}>
+          {/* <img src="/images/maps/Easy map.png" alt="" /> */}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Game;
