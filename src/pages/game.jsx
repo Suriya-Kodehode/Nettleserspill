@@ -3,10 +3,9 @@ import styles from "../CSSModules/game.module.css";
 function Game() {
   return (
     <>
-      <div>
-        <div className={styles.mapContainer}>
-          <img src="/images/maps/map.png" alt="" className={styles.map} />
-        </div>
+      <div className={styles.mapContainer}>
+        <img src="/images/maps/BigMap.png" alt="" className={styles.map} />
+        <img src="/images/enemy/cat.gif" alt="enemy" className={styles.enemy} />
       </div>
     </>
   );
