@@ -9,6 +9,7 @@
 
     /* customized css variables */
     --balloon-vs-monkey: url('/images/background/Balloon vs monkey.svg');
+    --cursed: url('/images/background/Cursed.svg');
     --lightgreen: #66FF99;    
 }
 
@@ -28,7 +29,7 @@
 
 /* Background for /start page */
 .startBG {
-    background: var(--balloon-vs-monkey);
+    background: var(--cursed);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
