@@ -17,14 +17,8 @@
     gap: 3rem 0;
 }
 .box h1 {
-    font-size: 6rem;
+    font-size: 5rem;
     font-family: 'YangBagus', sans-serif;
-
-    background: var(--start-h1-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: var(--start-h1-shadow);
 }
 .box a {
     text-decoration: 0;
@@ -32,25 +26,21 @@
     border: 2px solid transparent;
     border-radius: 0.5rem;
     outline: none;
-    transition: transform ease-in 0.1s;
 }
 .box a:hover {
-    transform: scale(1.1);
+    border-color: rgb(14, 85, 14);
+}
+.box a:focus, .box a:focus-visible {
+    outline: 4px auto rgb(16, 128, 16);
 }
 
 .box p {
     width: fit-content;
-    padding: 0.4rem 1rem 0 1rem;
+    padding: 0.3rem 1rem;
     margin: 0;
     border-radius: 0.5rem;
     text-decoration: none;
-    text-shadow: var(--start-p-shadow);
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-weight: 600;
-    color: var(--start-p-color);
-    font-family: 'YangBagusP';
-    cursor: pointer;
-}
-.box p:active {
-    color: rgba(168, 196, 93, 0.644);
+    background-color: rgba(21, 126, 65, 0.363);
 }
