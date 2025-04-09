@@ -125,11 +125,8 @@
   80% {
     transform: translate(992px, 320px);
   }
-  85% {
+  95% {
     transform: translate(1360px, 320px);
-  }
-  99% {
-    transform: translate(1416px, 320px);
   }
   100% {
     transform: translate(1416px, 320px);
