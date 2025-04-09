@@ -20,7 +20,7 @@
   height: 32px;
   animation-name: saver;
   animation-delay: 0s;
-  animation-duration: 100s;
+  animation-duration: 75s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
@@ -49,75 +49,72 @@
   17% {
     transform: translate(448px, 224px);
   }
-  24.14% {
+  19% {
     transform: translate(448px, 320px);
   }
-  27.59% {
+  21% {
     transform: translate(528px, 320px);
   }
-  31.03% {
+  25% {
     transform: translate(528px, 80px);
   }
-  34.48% {
+  27% {
     transform: translate(656px, 80px);
   }
-  37.93% {
+  35% {
     transform: translate(656px, 544px);
   }
-  42.38% {
+  42% {
     transform: translate(1032px, 544px);
   }
   43% {
     transform: translate(1048px, 528px);
   }
-  48.28% {
+  46% {
     transform: translate(1296px, 528px);
   }
-  51.72% {
+  48% {
     transform: translate(1296px, 424px);
   }
-  55.17% {
+  51% {
     transform: translate(1096px, 424px);
   }
-  58.62% {
+  55% {
     transform: translate(1096px, 216px);
   }
-  62.07% {
+  61% {
     transform: translate(1312px, 216px);
   }
-  65.52% {
+  65% {
     transform: translate(1312px, 48px);
   }
-  68.97% {
+  72% {
     transform: translate(760px, 48px);
   }
-  72.41% {
+  73% {
     transform: translate(760px, 168px);
   }
-  75.86% {
+  75% {
     transform: translate(992px, 168px);
   }
-  79.31% {
+  77% {
     transform: translate(992px, 320px);
   }
-  82.76% {
+  78% {
     transform: translate(1053px, 320px);
     opacity: 100%;
   }
-  86.21% {
+  78.1% {
     transform: translate(1056px, 320px);
     opacity: 0%;
   }
-  89.66% {
+  80% {
     transform: translate(1136px, 320px);
     opacity: 0%;
   }
-  93.10% {
+  80.1% {
     transform: translate(1137px, 320px);
     opacity: 100%;
-  }
-  96.55% {
-    transform: translate(1400px, 320px);
   }
   100% {
     transform: translate(1400px, 320px);
