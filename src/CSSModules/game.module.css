@@ -20,7 +20,7 @@
   height: 32px;
   animation-name: saver;
   animation-delay: 0s;
-  animation-duration: 103.51s;
+  animation-duration: 100s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
@@ -30,23 +30,23 @@
     transform: translate(0px, 0px);
     opacity: 0%;
   }
-  3.45% {
+  1% {
     transform: translate(-24px, 320px);
     opacity: 100%;
   }
-  6.90% {
+  5% {
     transform: translate(200px, 320px);
   }
-  10.35% {
+  8% {
     transform: translate(200px, 456px);
   }
-  13.79% {
+  11% {
     transform: translate(360px, 456px);
   }
-  17.24% {
+  15% {
     transform: translate(360px, 224px);
   }
-  20.69% {
+  17% {
     transform: translate(448px, 224px);
   }
   24.14% {
