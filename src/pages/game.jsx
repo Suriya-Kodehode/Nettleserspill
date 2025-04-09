@@ -4,7 +4,7 @@ function Game() {
   return (
     <>
       <div className={styles.mapContainer}>
-        <img src="/images/maps/BigMap.png" alt="" className={styles.map} />
+        <img src="/images/maps/New Dawn.png" alt="" className={styles.map} />
         <img src="/images/enemy/cat.gif" alt="enemy" className={styles.enemy} />
       </div>
     </>
