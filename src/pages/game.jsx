@@ -1,15 +1,14 @@
+import Canvas from "../components/gameComponents/Canvas";
 import styles from "../CSSModules/game.module.css";
 
 function Game() {
+  const mapName = "newDawn";
+  const spriteName = ["monkey"];
+
   return (
     <>
       <div className={styles.mapContainer}>
-        <img src="/images/maps/New Dawn.png" alt="" className={styles.map} />
-        <img
-          src="/images/enemy/MonkeySprite.png"
-          alt="enemy"
-          className={styles.enemy}
-        />
+        <Canvas mapName={mapName} sprites={spriteName}/>
       </div>
     </>
   );
