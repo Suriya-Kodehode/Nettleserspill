@@ -11,6 +11,42 @@
   animation: saver 1s infinite alternate;
 }
 
+.Tower1 {
+  /* display: none; */
+  position: absolute;
+  top: -18px;
+  left: -60px;
+  background-color: black;
+  border-radius: 50%;
+  outline-style: solid;
+  outline-width: 3px;
+  color: rgb(17, 0, 255);
+}
+
+.Tower2 {
+  /* display: none; */
+  position: absolute;
+  left: 47px;
+  top: -18px;
+  background-color: black;
+  border-radius: 50%;
+  outline-style: solid;
+  outline-width: 3px;
+  color: rgb(17, 0, 255);
+}
+
+.Tower3 {
+  /* display: none; */
+  position: absolute;
+  left: -7px;
+  top: -50px;
+  background-color: black;
+  border-radius: 50%;
+  outline-style: solid;
+  outline-width: 3px;
+  color: rgb(17, 0, 255);
+}
+
 @keyframes saver {
   0% {
     outline-offset: -6px;

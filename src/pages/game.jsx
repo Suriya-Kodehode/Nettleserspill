@@ -1,11 +1,12 @@
 import styles from "../CSSModules/game.module.css";
 import Tower from "../components/Tower.jsx";
+import Pause from "../components/Pause.jsx";
 
 function Game() {
   return (
     <>
       <div className={styles.mapContainer}>
-        <Tower top={350} left={10} />
+        <Pause />
         <Tower top={350} left={100} />
         <Tower top={400} left={260} />
         <Tower top={500} left={260} />

@@ -1,0 +1,19 @@
+.pause {
+  z-index: 1;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 40px;
+  background-color: green;
+  outline-style: solid;
+  /* outline-offset: -3px; */
+  outline-color: rgb(17, 0, 255);
+  position: absolute;
+}
+
+.pause p {
+  position: absolute;
+  letter-spacing: 5px;
+  left: 12px;
+  top: -10px;
+}
