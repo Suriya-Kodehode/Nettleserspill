@@ -1,30 +1,38 @@
+import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 
 export const spawnEnemies = (config, sprites) => {
-    const { spawnIntervals, spriteCount, spawnDelay } = config;
-    const enemies = [];
-    let spawnIndex = {};
+    const { spawnIntervals, waves, spawnDelay } = config;
     const timeoutIds = [];
-
-    Object.keys(spriteCount).forEach((spriteType) => {
-        spawnIndex[spriteType] = 0;
-    })
-
-    const spawnEnemy = (setEnemies) => {
-        Object.entries(spriteCount).forEach(([spriteType, count]) => {
-            if(spawnIndex[spriteType] < count) {
-                enemies.push({
-                    id: `${spriteType}-${spawnIndex[spriteType] + 1}`,
-                    sprite: spriteType,
-                    spawnTime: spawnIndex[spriteType] * spawnIntervals + spawnDelay,
-                })
-                spawnIndex[spriteType]++;
-            }
-        })
-
-        setEnemies([...enemies]);
-        const timeoutId = setTimeout(() => spawnEnemy(setEnemies), spawnIntervals);
-        timeoutIds.push(timeoutId);
-    }
-
-    return { spawnEnemy, timeoutIds };
-}
+    let waveIndex = 0;
+  
+    const spawnWave = (setEnemies) => {
+      if (waveIndex >= waves.length) return;
+  
+      const currentWave = waves[waveIndex];
+      const waveEnemies = [];
+  
+      const entries = Object.entries(currentWave);
+      for (let entryIndex = 0; entryIndex < entries.length; entryIndex++) {
+        const [spriteType, count] = entries[entryIndex];
+        const { hp: defaultHP, hitbox: defaultHitbox } = getDefaultEnemyProperties(spriteType);
+        for (let i = 0; i < count; i++) {
+          waveEnemies.push({
+            id: `${spriteType}-wave${waveIndex}-${i + 1}`,
+            sprite: spriteType,
+            spawnTime: i * spawnIntervals + spawnDelay,
+            hp: defaultHP,
+            hitbox: { ...defaultHitbox },
+          });
+        }
+      }
+  
+      setEnemies((prevEnemies) => prevEnemies.concat(waveEnemies));
+      waveIndex++;
+  
+      const timeoutId = setTimeout(() => spawnWave(setEnemies), spawnDelay);
+      timeoutIds.push(timeoutId);
+    };
+  
+    return { spawnWave, timeoutIds };
+  };
+  

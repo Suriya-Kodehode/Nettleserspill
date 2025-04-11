@@ -1,3 +1,5 @@
+import { wavesForNewDawn } from "./waveConfig.jsx"
+
 export const mapConfigs = {
     newDawn: {
         mapSrc: "/images/maps/New Dawn.png",
@@ -9,7 +11,8 @@ export const mapConfigs = {
         spriteCount: {
             monkey: 10,
         },
-        waveCount: 5,
+        waves: wavesForNewDawn,
+        waveCount: wavesForNewDawn.length,
         spawnDelay: 1000,
     }
 }
