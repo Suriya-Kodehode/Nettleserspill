@@ -1,8 +1,15 @@
-.mapContainer {
+.gameContainer {
   background-color: black;
+  height: 100vh;
+}
+.playerStatus {
+  width: fit-content;
+}
+
+.mapContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: auto;
 }

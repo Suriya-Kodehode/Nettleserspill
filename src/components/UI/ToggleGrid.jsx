@@ -6,7 +6,7 @@ const ToggleGrid = ({ showGrid, onToggle, gridCellSize, onCellSizeChange }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "end",
-          top: -120,
+          top: 10,
           right: 10,
           zIndex: 10,
           backgroundColor: "black",

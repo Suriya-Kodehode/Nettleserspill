@@ -1,10 +1,13 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { mapConfigs } from "../GameUtility/mapConfig.jsx";
 import { enemySprites } from "../GameUtility/enemySprites.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-import ToggleGrid from "../UI/ToggleGrid.jsx";
-import { drawGrid } from "../Functions/drawGrid.jsx";
+
+import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
+import { computeEnemyDrawProps } from "../GameUtility/computeEnemyProps.jsx";
+
+import { player } from "../GameUtility/PlayerStatus.jsx";
 
 const preloadSprites = (sprites) => {
   const images = {};
@@ -23,18 +26,19 @@ const preloadSprites = (sprites) => {
   return { images, loadStatus };
 };
 
-const Canvas = ({
-  mapName = "newDawn",
-  sprites = ["monkey"],
-  gridEnabled = false,
-  style = {},
-}) => {
+const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
   const canvasRef = useRef(null);
-  const mapConfig = mapConfigs[mapName];
-  const enemyPath = getEnemyPath(mapName);
+  const gameMapRef = useRef(null);
 
-  const gameMap = new Image();
-  gameMap.src = mapConfig.mapSrc;
+  const mapConfig = mapConfigs[mapName];
+  const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
+
+  useEffect(() => {
+    if (!gameMapRef.current) {
+      gameMapRef.current = new Image();
+    }
+    gameMapRef.current.src = mapConfig.mapSrc;
+  }, [mapConfig.mapSrc]);
 
   const { images: enemyImage, loadStatus: isEnemyLoaded } = preloadSprites(sprites);
 
@@ -44,119 +48,114 @@ const Canvas = ({
     enemiesRef.current = enemies;
   }, [enemies]);
 
-
-  const [showGrid, setShowGrid] = useState(gridEnabled);
- 
-  const [gridCellSize, setGridCellSize] = useState(16);
-
   const timeoutIdsRef = useRef([]);
+
+  const bgCanvasRef = useRef(null);
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  const bgLoadedRef = useRef(bgLoaded);
+  useEffect(() => {
+    bgLoadedRef.current = bgLoaded;
+  }, [bgLoaded]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-
-    let animationFrameId;
-    let isMapLoaded = false;
-
-    gameMap.onload = () => {
-      isMapLoaded = true;
-    };
-    gameMap.onerror = () => {
-      console.error(`Failed to load map image: ${mapConfig.mapSrc}`);
-    };
-
-    const { spawnWave, timeoutIds } = spawnEnemies(mapConfig, sprites);
-    timeoutIdsRef.current = timeoutIds;
-    const startTimeout = setTimeout(() => spawnWave(setEnemies), mapConfig.spawnDelay);
-    timeoutIdsRef.current.push(startTimeout);
-
-    const { width, height, offsetX, offsetY } = mapConfig;
+    const { width, height, offsetX, offsetY, spawnDelay } = mapConfig;
+    
     const enemyPathLength = enemyPath.length;
     const startKeyframe = enemyPath[0];
     const endKeyframe = enemyPath[enemyPathLength - 1];
-
+    
+    if (gameMapRef.current.complete) {
+      bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
+      setBgLoaded(true);
+      console.log("Map image already complete.");
+    } else {
+      gameMapRef.current.onload = () => {
+        bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
+        setBgLoaded(true);
+        console.log("Map image loaded via onload.");
+      };
+      gameMapRef.current.onerror = () => {
+        console.error(`Failed to load map image: ${mapConfig.mapSrc}`);
+      };
+    }
+    
+    const { spawnWave, timeoutIds } = spawnEnemies(mapConfig, sprites);
+    timeoutIdsRef.current = timeoutIds;
+    const startTimeout = setTimeout(() => spawnWave(setEnemies), spawnDelay);
+    timeoutIdsRef.current.push(startTimeout);
+    
+    let animationFrameId;
     const render = (timestamp) => {
       context.clearRect(0, 0, width, height);
-
-      if (isMapLoaded) {
-        context.drawImage(gameMap, 0, 0, width, height);
+      
+      if (bgLoadedRef.current && bgCanvasRef.current) {
+        context.drawImage(bgCanvasRef.current, 0, 0);
       }
-      if (showGrid) {
-        drawGrid(context, width, height, gridCellSize);
-      }
-
-      enemiesRef.current.forEach((enemy) => {
+      
+      const currentEnemies = enemiesRef.current;
+      for (let i = 0, len = currentEnemies.length; i < len; i++) {
+        const enemy = currentEnemies[i];
         const cycleTime = timestamp - enemy.spawnTime;
-        if (cycleTime < 0) return;
-
-        let prevKey = startKeyframe,
-            nextKey = endKeyframe;
-
-        for (let j = 0; j < enemyPathLength - 1; j++) {
-          const keyA = enemyPath[j],
-                keyB = enemyPath[j + 1];
-          if (cycleTime >= keyA.time && cycleTime <= keyB.time) {
-            prevKey = keyA;
-            nextKey = keyB;
-            break;
+        if (cycleTime < 0) continue;
+  
+        if (cycleTime >= endKeyframe.time) {
+          if (!enemy.hitPlayer) {
+            player.hp -= 1;
+            enemy.hitPlayer = true;
           }
+          continue;
         }
-
-        const segmentDuration = nextKey.time - prevKey.time;
-        const progress = segmentDuration !== 0 ? (cycleTime - prevKey.time) / segmentDuration : 0;
-        const posX = prevKey.x + (nextKey.x - prevKey.x) * progress;
-        const posY = prevKey.y + (nextKey.y - prevKey.y) * progress;
-        const opacity = prevKey.opacity + (nextKey.opacity - prevKey.opacity) * progress;
-
-        const finalX = posX + offsetX;
-        const finalY = posY + offsetY;
-
+  
+        const { finalX, finalY, opacity } = computeEnemyDrawProps(
+          cycleTime,
+          enemyPath,
+          offsetX,
+          offsetY
+        );
+  
         context.save();
         context.globalAlpha = opacity;
-
         const spriteImage = enemyImage[enemy.sprite];
         if (spriteImage && isEnemyLoaded[enemy.sprite]) {
+          const spriteData = enemySprites[enemy.sprite];
           context.drawImage(
             spriteImage,
             finalX,
             finalY,
-            enemySprites[enemy.sprite].width,
-            enemySprites[enemy.sprite].height
+            spriteData.width,
+            spriteData.height
           );
         } else {
           console.error(`Sprite image not loaded: ${enemy.sprite}`);
         }
         context.restore();
-      });
-
+      }
+  
       animationFrameId = requestAnimationFrame(render);
     };
-
+    
     animationFrameId = requestAnimationFrame(render);
+    
     return () => {
       timeoutIdsRef.current.forEach(clearTimeout);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [mapConfig, sprites, showGrid, gridCellSize]);
-
+  
+  }, [mapConfig, sprites]);
+  
   return (
-    <div style={{ position: "relative" }}>
-      <canvas
-        ref={canvasRef}
-        width={mapConfig.width}
-        height={mapConfig.height}
-        style={{ border: "1px solid #000", ...style }}
-      >
-        Your browser does not support the HTML5 canvas tag.
-      </canvas>
-      <ToggleGrid
-        showGrid={showGrid}
-        onToggle={() => setShowGrid(!showGrid)}
-        gridCellSize={gridCellSize}
-        onCellSizeChange={setGridCellSize}
-      />
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={mapConfig.width}
+      height={mapConfig.height}
+      style={{ border: "1px solid #000", ...style }}
+    >
+      Your browser does not support the HTML5 canvas tag.
+    </canvas>
   );
 };
 
