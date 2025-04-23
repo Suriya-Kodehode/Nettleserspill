@@ -1,9 +1,10 @@
 import { useRef, useEffect, useState } from "react";
-
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { mapConfigs } from "../GameUtility/mapConfig.jsx";
 import { enemySprites } from "../GameUtility/enemySprites.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
+import ToggleGrid from "../UI/ToggleGrid.jsx";
+import { drawGrid } from "../Functions/drawGrid.jsx";
 
 const preloadSprites = (sprites) => {
   const images = {};
@@ -22,7 +23,12 @@ const preloadSprites = (sprites) => {
   return { images, loadStatus };
 };
 
-const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
+const Canvas = ({
+  mapName = "newDawn",
+  sprites = ["monkey"],
+  gridEnabled = false,
+  style = {},
+}) => {
   const canvasRef = useRef(null);
   const mapConfig = mapConfigs[mapName];
   const enemyPath = getEnemyPath(mapName);
@@ -37,6 +43,11 @@ const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
   useEffect(() => {
     enemiesRef.current = enemies;
   }, [enemies]);
+
+
+  const [showGrid, setShowGrid] = useState(gridEnabled);
+ 
+  const [gridCellSize, setGridCellSize] = useState(16);
 
   const timeoutIdsRef = useRef([]);
 
@@ -60,7 +71,7 @@ const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
     const startTimeout = setTimeout(() => spawnWave(setEnemies), mapConfig.spawnDelay);
     timeoutIdsRef.current.push(startTimeout);
 
-    const { width, height, offsetX, offsetY, spawnDelay } = mapConfig;
+    const { width, height, offsetX, offsetY } = mapConfig;
     const enemyPathLength = enemyPath.length;
     const startKeyframe = enemyPath[0];
     const endKeyframe = enemyPath[enemyPathLength - 1];
@@ -71,20 +82,20 @@ const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
       if (isMapLoaded) {
         context.drawImage(gameMap, 0, 0, width, height);
       }
+      if (showGrid) {
+        drawGrid(context, width, height, gridCellSize);
+      }
 
-      const enemyList = enemiesRef.current;
-      const enemyCount = enemyList.length;
-      for (let i = 0; i < enemyCount; i++) {
-        const enemy = enemyList[i];
+      enemiesRef.current.forEach((enemy) => {
         const cycleTime = timestamp - enemy.spawnTime;
-        if (cycleTime < 0) continue;
+        if (cycleTime < 0) return;
 
         let prevKey = startKeyframe,
-          nextKey = endKeyframe;
+            nextKey = endKeyframe;
 
         for (let j = 0; j < enemyPathLength - 1; j++) {
           const keyA = enemyPath[j],
-            keyB = enemyPath[j + 1];
+                keyB = enemyPath[j + 1];
           if (cycleTime >= keyA.time && cycleTime <= keyB.time) {
             prevKey = keyA;
             nextKey = keyB;
@@ -117,7 +128,7 @@ const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
           console.error(`Sprite image not loaded: ${enemy.sprite}`);
         }
         context.restore();
-      }
+      });
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -127,17 +138,25 @@ const Canvas = ({ mapName = "newDawn", sprites = ["monkey"], style = {} }) => {
       timeoutIdsRef.current.forEach(clearTimeout);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [mapConfig, sprites]);
+  }, [mapConfig, sprites, showGrid, gridCellSize]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={mapConfig.width}
-      height={mapConfig.height}
-      style={{ border: "1px solid #000", ...style }}
-    >
-      Your browser does not support the HTML5 canvas tag.
-    </canvas>
+    <div style={{ position: "relative" }}>
+      <canvas
+        ref={canvasRef}
+        width={mapConfig.width}
+        height={mapConfig.height}
+        style={{ border: "1px solid #000", ...style }}
+      >
+        Your browser does not support the HTML5 canvas tag.
+      </canvas>
+      <ToggleGrid
+        showGrid={showGrid}
+        onToggle={() => setShowGrid(!showGrid)}
+        gridCellSize={gridCellSize}
+        onCellSizeChange={setGridCellSize}
+      />
+    </div>
   );
 };
 
