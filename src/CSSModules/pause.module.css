@@ -1,5 +1,4 @@
 .pause {
-  z-index: 1;
   left: 5px;
   top: 5px;
   width: 10px;
@@ -8,7 +7,7 @@
   outline-style: solid;
   /* outline-offset: -3px; */
   outline-color: rgb(17, 0, 255);
-  position: absolute;
+  position: fixed;
 }
 
 .pause p {
@@ -16,4 +15,12 @@
   letter-spacing: 5px;
   left: 12px;
   top: -10px;
+}
+
+.Bscreen {
+  z-index: 1;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
 }

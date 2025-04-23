@@ -1,9 +1,15 @@
 import styles from "../CSSModules/pause.module.css";
 
+function Break() {
+  console.log("pause");
+}
+
 export default function Pause() {
   return (
-    <button className={styles.pause}>
-      <p>||</p>
-    </button>
+    <div className={styles.Bscreen}>
+      <button className={styles.pause} onClick={Break}>
+        <p>||</p>
+      </button>
+    </div>
   );
 }

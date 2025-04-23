@@ -5,7 +5,7 @@ import Pause from "../components/Pause.jsx";
 function Game() {
   return (
     <>
-      <div className={styles.mapContainer}>
+      <div>
         <Pause />
         <Tower top={350} left={100} />
         <Tower top={400} left={260} />

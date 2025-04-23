@@ -2,12 +2,22 @@ import { useState } from "react";
 import styles from "../CSSModules/Tower.module.css";
 
 export default function Tower({ top, left }) {
-  // State to manage visibility of the <p> tags
   const [isVisible, setIsVisible] = useState(false);
 
-  // Function to toggle visibility
   function selector() {
     setIsVisible((prevState) => !prevState);
+  }
+
+  function T1() {
+    console.log("BalloonGunner");
+  }
+
+  function T2() {
+    console.log("Tower 2");
+  }
+
+  function T3() {
+    console.log("Tower 3");
   }
 
   return (
@@ -16,10 +26,9 @@ export default function Tower({ top, left }) {
       className={styles.tower}
       style={{ top: `${top}px`, left: `${left}px` }}
     >
-      {/* Conditionally render <p> tags based on isVisible state */}
-      {isVisible && <p className={styles.Tower1}>Tower1</p>}
-      {isVisible && <p className={styles.Tower2}>Tower2</p>}
-      {isVisible && <p className={styles.Tower3}>Tower3</p>}
+      {isVisible && <p onClick={T1} className={styles.Tower1}></p>}
+      {isVisible && <p onClick={T2} className={styles.Tower2}></p>}
+      {isVisible && <p onClick={T3} className={styles.Tower3}></p>}
     </button>
   );
 }
