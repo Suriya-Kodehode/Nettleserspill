@@ -14,10 +14,11 @@ export const mapConfigs = {
     waves: wavesForNewDawn,
     waveCount: wavesForNewDawn.length,
     spawnDelay: 1000,
-  
-    maxRandomDelay: 500,        
-    spawnIntervalMultiplier: 1,  
+
+    maxRandomDelay: 500,         
+    spawnIntervalMultiplier: 3,  
     maxSpriteSeparation: 10,     
-    defaultLane: 0,            
-  }
+    defaultLane: 0,              
+    waveInterval: 4000,        
+  },
 };
