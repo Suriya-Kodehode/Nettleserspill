@@ -9,7 +9,7 @@ const ToggleGrid = ({ showGrid, onToggle, gridCellSize, onCellSizeChange }) => {
           top: 10,
           right: 10,
           zIndex: 10,
-          backgroundColor: "black",
+          backgroundColor: "inherit",
           padding: "10px",
           borderRadius: "4px",
         }}

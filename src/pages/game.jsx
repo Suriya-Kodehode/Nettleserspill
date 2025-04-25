@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Canvas from "../components/gameComponents/Canvas.jsx";
 import CanvasGrid from "../components/Functions/CanvasGrid.jsx";
-import PlayerStatus, { player } from "../components/GameUtility/PlayerStatus";
+import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import styles from "../CSSModules/game.module.css";
 import { mapConfigs } from "../components/GameUtility/mapConfig.jsx";
@@ -19,8 +19,10 @@ function Game() {
   return (
     <>
         <div className={styles.gameContainer}>
-          <div className={styles.playerStatus}>
-            <PlayerStatus player={player} />
+          <div className={styles.statusContainer}>
+            <div className={styles.playerStatus}>
+              <PlayerStatus player={player} />
+            </div>
           </div>
           <div className={styles.utilityContainer}>
             <ToggleGrid

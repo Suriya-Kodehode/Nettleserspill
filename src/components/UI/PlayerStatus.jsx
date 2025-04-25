@@ -1,4 +1,4 @@
-// PlayerStatus.jsx
+
 import React, { useState, useEffect } from "react";
 
 class Player {
@@ -21,7 +21,6 @@ class Player {
 
 export const player = new Player();
 
-
 const PlayerStatus = ({ player, iconUrl = "/images/icons/mdi_heart.svg" }) => {
   const [hp, setHp] = useState(player.hp);
 
@@ -36,7 +35,7 @@ const PlayerStatus = ({ player, iconUrl = "/images/icons/mdi_heart.svg" }) => {
     display: 'flex',
     alignItems: 'center',
     padding: '5px 10px',
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "inherit",
     borderRadius: '4px',
     color: 'white'
   };
