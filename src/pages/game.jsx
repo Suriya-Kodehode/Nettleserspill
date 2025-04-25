@@ -17,34 +17,38 @@ function Game() {
   const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
 
   return (
-    <div className={styles.gameContainer}>
-      <div className={styles.playerStatus}>
-        <PlayerStatus player={player} />
-      </div>
-      <ToggleGrid
-        showGrid={showGrid}
-        onToggle={() => setShowGrid(!showGrid)}
-        gridCellSize={gridCellSize}
-        onCellSizeChange={setGridCellSize}
-      />
-      <div className={styles.mapContainer}>
-        <div style={{ position: "relative", width: canvasWidth, height: canvasHeight }}>
-          <Canvas 
-            mapName={mapName} 
-            sprites={spriteName}
-          
-          />
-          {showGrid && (
-            <CanvasGrid
-              width={canvasWidth}
-              height={canvasHeight}
+    <>
+        <div className={styles.gameContainer}>
+          <div className={styles.playerStatus}>
+            <PlayerStatus player={player} />
+          </div>
+          <div className={styles.utilityContainer}>
+            <ToggleGrid
+              showGrid={showGrid}
+              onToggle={() => setShowGrid(!showGrid)}
               gridCellSize={gridCellSize}
-            
+              onCellSizeChange={setGridCellSize}
             />
-          )}
+          </div>
+          <div className={styles.mapContainer}>
+            <div style={{ position: "relative", width: canvasWidth, height: canvasHeight }}>
+              <Canvas 
+                mapName={mapName} 
+                sprites={spriteName}
+              
+              />
+              {showGrid && (
+                <CanvasGrid
+                  width={canvasWidth}
+                  height={canvasHeight}
+                  gridCellSize={gridCellSize}
+                
+                />
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 

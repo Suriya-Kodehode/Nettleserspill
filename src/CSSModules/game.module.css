@@ -1,15 +1,39 @@
+
 .gameContainer {
   background-color: black;
   height: 100vh;
+
+  display: grid;
+  grid-template-areas:
+  "status status util"
+  "map map util"
+  "map map util"
+  ;
+
+  grid-template-columns: 1fr 1fr auto;
+  grid-template-rows: auto 1fr 1fr;
 }
 .playerStatus {
+  grid-area: status;
   width: fit-content;
 }
 
 .mapContainer {
+  grid-area: map;
+
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: auto;
+}
+
+.utilityContainer {
+  grid-area: util;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
   height: auto;
 }
