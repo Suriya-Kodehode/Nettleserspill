@@ -22,7 +22,7 @@ const Canvas = ({
   const enemiesRef = useRef(enemies);
   const [bgLoaded, setBgLoaded] = useState(false);
 
-  const { images: enemyImages, loadStatus: enemyLoadStatus } = preloadStaticSprites(sprites);
+  const { images: enemyImages } = preloadStaticSprites(sprites);
 
   const animatedFramesRef = useRef({});
   useEffect(() => {
@@ -69,7 +69,7 @@ const Canvas = ({
     const { spawnWave, timeoutIds } = spawnEnemies(mapConfig, sprites);
     timeoutIdsRef.current = timeoutIds;
     const startTimeout = setTimeout(() => {
-      spawnWave(setEnemies);
+      spawnWave((enemyArr) => setEnemies(enemyArr));
     }, spawnDelay);
     timeoutIdsRef.current.push(startTimeout);
 
@@ -101,7 +101,7 @@ const Canvas = ({
         let spriteToDraw = null;
         const frames = animatedFramesRef.current[enemy.sprite];
         if (frames && frames.length > 0) {
-          const frameDelay = 100; 
+          const frameDelay = 100;
           const frameIndex = Math.floor(timestamp / frameDelay) % frames.length;
           spriteToDraw = frames[frameIndex];
         } else {

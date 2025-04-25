@@ -7,18 +7,17 @@ export const mapConfigs = {
     height: 600,
     offsetX: -16,
     offsetY: -32,
-    spawnIntervals: 2000,
-    spriteCount: {
-      monkey: 10,
-    },
+    enemySpawnGap: 3000,
+    spriteCount: { monkey: 1 },
     waves: wavesForNewDawn,
     waveCount: wavesForNewDawn.length,
     spawnDelay: 1000,
-
-    maxRandomDelay: 500,         
-    spawnIntervalMultiplier: 3,  
-    maxSpriteSeparation: 10,     
-    defaultLane: 0,              
-    waveInterval: 4000,        
+    maxRandomDelay: 200,
+    maxSpriteSeparation: 10,
+    defaultLane: 0,
+    waveInterval: 20000,
   },
 };
+
+
+

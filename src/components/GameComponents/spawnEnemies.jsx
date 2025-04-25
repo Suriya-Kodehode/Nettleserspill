@@ -1,19 +1,22 @@
 import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 
 export const spawnEnemies = (config, sprites) => {
-  const { spawnIntervals, waves, spawnDelay } = config;
+  const { spawnDelay, waves } = config;
   const timeoutIds = [];
   let waveIndex = 0;
 
-  const maxRandomDelay = config.maxRandomDelay !== undefined ? config.maxRandomDelay : 500;
-  const spawnIntervalMultiplier =
-    config.spawnIntervalMultiplier !== undefined ? config.spawnIntervalMultiplier : 1;
+  const enemySpawnGap =
+    config.enemySpawnGap !== undefined ? config.enemySpawnGap : 3000; 
+
+  const maxRandomDelay =
+    config.maxRandomDelay !== undefined ? config.maxRandomDelay : 200;
   const maxSpriteSeparation =
     config.maxSpriteSeparation !== undefined ? config.maxSpriteSeparation : 10;
-  const defaultLane = config.defaultLane !== undefined ? config.defaultLane : 0;
-  
+  const defaultLane =
+    config.defaultLane !== undefined ? config.defaultLane : 0;
+
   const waveInterval =
-    config.waveInterval !== undefined ? config.waveInterval : spawnDelay;
+    config.waveInterval !== undefined ? config.waveInterval : 2000; 
 
   const spawnWave = (setEnemies) => {
     if (waveIndex >= waves.length) {
@@ -22,38 +25,46 @@ export const spawnEnemies = (config, sprites) => {
     }
 
     const currentWave = waves[waveIndex];
-    const waveEnemies = [];
+
+    let maxWaveDelay = 0;
 
     Object.entries(currentWave).forEach(([spriteType, count]) => {
-      const { hp: defaultHP, hitbox: defaultHitbox } =
-        getDefaultEnemyProperties(spriteType);
-
       for (let i = 0; i < count; i++) {
-        const lane = defaultLane;
         const randomDelay = Math.random() * maxRandomDelay;
-        const enemySpawnTime =
-          i * spawnIntervals * spawnIntervalMultiplier + spawnDelay + randomDelay;
+        const precomputedDelay = spawnDelay + i * enemySpawnGap + randomDelay;
+   
+        if (precomputedDelay > maxWaveDelay) {
+          maxWaveDelay = precomputedDelay;
+        }
         const spriteOffset =
-          Math.random() * maxSpriteSeparation - maxSpriteSeparation / 2;
+          Math.random() * maxSpriteSeparation - (maxSpriteSeparation / 2);
+        const { hp: defaultHP, hitbox: defaultHitbox } = getDefaultEnemyProperties(spriteType);
 
-        waveEnemies.push({
+        const enemy = {
           id: `${spriteType}-wave${waveIndex}-${i + 1}`,
           sprite: spriteType,
-          spawnTime: enemySpawnTime,
+          spawnTime: 0,
           hp: defaultHP,
           hitbox: { ...defaultHitbox },
-          lane: lane,
-          randomOffset: randomDelay,
+          lane: defaultLane,
           spriteOffset: spriteOffset,
-        });
+          randomOffset: randomDelay,
+        };
+
+        const timeoutId = setTimeout(() => {
+          const actualSpawnTime = performance.now();
+          setEnemies((prevEnemies) => [...prevEnemies, { ...enemy, spawnTime: actualSpawnTime }]);
+        }, precomputedDelay);
+        timeoutIds.push(timeoutId);
       }
     });
 
-    setEnemies((prevEnemies) => prevEnemies.concat(waveEnemies));
     waveIndex++;
 
     if (waveIndex < waves.length) {
-      const timeoutId = setTimeout(() => spawnWave(setEnemies), waveInterval);
+
+      const nextWaveDelay = maxWaveDelay + waveInterval;
+      const timeoutId = setTimeout(() => spawnWave(setEnemies), nextWaveDelay);
       timeoutIds.push(timeoutId);
     }
   };
