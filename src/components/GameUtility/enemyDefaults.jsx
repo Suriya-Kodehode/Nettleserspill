@@ -1,7 +1,7 @@
-import { enemySprites } from "../GameData/enemySprites.jsx";
+import { enemiesData } from "../GameData/enemyData.jsx";
 
 export const getDefaultEnemyProperties = (spriteType) => {
-  const spriteData = enemySprites[spriteType];
+  const spriteData = enemiesData[spriteType];
   if (!spriteData) {
     throw new Error(`Sprite type "${spriteType}" not found.`);
   }

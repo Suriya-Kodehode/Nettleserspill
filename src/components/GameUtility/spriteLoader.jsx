@@ -1,12 +1,12 @@
 // spriteLoader.jsx
 import { parseGIF, decompressFrames } from "gifuct-js";
-import { enemySprites } from "../GameData/enemySprites.jsx";
+import { enemiesData } from "../GameData/enemyData.jsx";
 
 export const preloadStaticSprites = (sprites) => {
   const images = {};
   const loadStatus = {};
   sprites.forEach((sprite) => {
-    const spriteData = enemySprites[sprite];
+    const spriteData = enemiesData[sprite];
   
     if (spriteData && spriteData.src.toLowerCase().endsWith(".gif")) return;
     const img = new Image();
@@ -26,7 +26,7 @@ export const loadAnimatedFrames = async (sprites) => {
   const animatedMapping = {};
   await Promise.all(
     sprites.map(async (sprite) => {
-      const spriteData = enemySprites[sprite];
+      const spriteData = enemiesData[sprite];
       if (spriteData && spriteData.src.toLowerCase().endsWith(".gif")) {
         try {
           const response = await fetch(spriteData.src);

@@ -1,4 +1,4 @@
-export const enemySprites = {
+export const enemiesData = {
     monkey: {
         src: '/images/enemy/MonkeyAni.gif',
         width: 32,

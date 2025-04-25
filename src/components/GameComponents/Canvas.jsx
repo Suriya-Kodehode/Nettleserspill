@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useMemo } from "react";
 import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
-import { enemySprites } from "../GameData/enemySprites.jsx";
+import { enemiesData } from "../GameData/enemyData.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
@@ -116,7 +116,7 @@ const Canvas = ({
         }
   
         if (spriteToDraw) {
-          const spriteData = enemySprites[enemy.sprite];
+          const spriteData = enemiesData[enemy.sprite];
           context.drawImage(
             spriteToDraw,
             adjustedX,
