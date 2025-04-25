@@ -1,11 +1,11 @@
 import { useRef, useEffect, useState, useMemo } from "react";
 import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
-import { enemySprites } from "../GameUtility/enemySprites.jsx";
+import { enemySprites } from "../GameData/enemySprites.jsx";
+import { mapConfigs } from "../GameData/mapConfig.jsx";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
-import { mapConfigs } from "../GameUtility/mapConfig.jsx";
-import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { computeEnemyDrawProps } from "../GameUtility/computeEnemyProps.jsx";
+import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
 import { playerTakeDamage } from "../GameComponents/playerTakeDamage.jsx";
 
 const Canvas = ({

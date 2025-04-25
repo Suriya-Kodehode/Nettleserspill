@@ -5,7 +5,7 @@ import CanvasGrid from "../components/Functions/CanvasGrid.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import styles from "../CSSModules/game.module.css";
-import { mapConfigs } from "../components/GameUtility/mapConfig.jsx";
+import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 
 function Game() {
   const mapName = "newDawn";

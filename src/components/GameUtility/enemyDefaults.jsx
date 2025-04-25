@@ -1,4 +1,4 @@
-import { enemySprites } from "./enemySprites.jsx";
+import { enemySprites } from "../GameData/enemySprites.jsx";
 
 export const getDefaultEnemyProperties = (spriteType) => {
   const spriteData = enemySprites[spriteType];

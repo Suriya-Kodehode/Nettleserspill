@@ -1,6 +1,6 @@
 // spriteLoader.jsx
 import { parseGIF, decompressFrames } from "gifuct-js";
-import { enemySprites } from "../GameUtility/enemySprites.jsx";
+import { enemySprites } from "../GameData/enemySprites.jsx";
 
 export const preloadStaticSprites = (sprites) => {
   const images = {};
