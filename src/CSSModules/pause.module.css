@@ -15,6 +15,14 @@
   letter-spacing: 5px;
   left: 12px;
   top: -10px;
+  font-weight: bolder;
+}
+.pause img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
 }
 
 .Bscreen {
