@@ -1,4 +1,4 @@
-// spriteLoader.jsx
+
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { enemiesData } from "../GameData/enemyData.jsx";
 

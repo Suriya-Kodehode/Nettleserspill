@@ -1,7 +1,7 @@
 import { mapConfigs } from "../GameUtility/mapConfig.jsx";
 import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 
-export const generateEnemiesForMap = (mapName, sprites) => {
+export const generateEnemiesForMap = (mapName) => {
   const mapConfig = mapConfigs[mapName];
   if (!mapConfig) {
     throw new Error(`Invalid map name: ${mapName}.`);
