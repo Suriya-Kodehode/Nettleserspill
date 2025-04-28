@@ -9,14 +9,8 @@
 
     /* customized css variables */
     --balloon-vs-monkey: url('/images/background/Balloon vs monkey.svg');
-
-    --start-h1-gradient: linear-gradient(to right, rgb(51, 255, 0), rgb(20, 245, 215), rgb(176, 248, 9),rgb(36, 247, 117));
-    --start-h1-shadow: 3px 3px 5px rgba(233, 152, 46, 0.425);
-    
-    --start-p-shadow: 3px 3px 5px rgb(92, 11, 5), 5px 5px 10px rgba(77, 92, 13, 0.863);
-    --start-p-color: rgb(238, 121, 67);
-
-    
+    --cursed: url('/images/background/Cursed.svg');
+    --lightgreen: #66FF99;    
 }
 
 /* Customize dowloaded fonts */
@@ -35,7 +29,7 @@
 
 /* Background for /start page */
 .startBG {
-    background: var(--balloon-vs-monkey);
+    background: var(--cursed);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -43,5 +37,6 @@
 
 /* Background for /game page */
 .gameBG {
-    background: #f2f2f2;
+    background: #242424;
+    background-size: cover;
 }
