@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Canvas from "../components/gameComponents/Canvas.jsx";
+import Canvas from "../components/GameComponents/Canvas.jsx";
 import CanvasGrid from "../components/Functions/CanvasGrid.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
