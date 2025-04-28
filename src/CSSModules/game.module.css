@@ -1,12 +1,10 @@
-
 .gameContainer {
   height: 100vh;
   display: grid;
   grid-template-areas:
-  "status status util"
-  "map map util"
-  "map map util"
-  ;
+    "status status util"
+    "map map util"
+    "map map util";
 
   grid-template-columns: auto 4fr 15%;
   grid-template-rows: auto 1fr 1fr;
@@ -14,7 +12,6 @@
 
 .statusContainer {
   grid-area: status;
-
 }
 .playerStatus {
   width: fit-content;
@@ -22,7 +19,6 @@
 
 .mapContainer {
   grid-area: map;
-
   display: flex;
   justify-content: center;
   align-items: start;
