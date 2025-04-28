@@ -1,4 +1,3 @@
-
 .gameContainer {
   height: 100vh;
   display: grid;
@@ -23,6 +22,123 @@
 .mapContainer {
   grid-area: map;
 
+/*
+.enemy {
+  position: absolute;
+  left: -16px;
+  top: -16px;
+  width: 32px;
+  height: 32px;
+  animation-name: saver;
+  animation-delay: 0s;
+  animation-duration: 75s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes saver {
+  0% {
+    transform: translate(0px, 0px);
+    opacity: 0%;
+  }
+  1% {
+    transform: translate(-24px, 320px);
+    opacity: 100%;
+  }
+  5% {
+    transform: translate(200px, 320px);
+  }
+  8% {
+    transform: translate(200px, 456px);
+  }
+  11% {
+    transform: translate(360px, 456px);
+  }
+  15% {
+    transform: translate(360px, 224px);
+  }
+  17% {
+    transform: translate(448px, 224px);
+  }
+  19% {
+    transform: translate(448px, 320px);
+  }
+  21% {
+    transform: translate(528px, 320px);
+  }
+  25% {
+    transform: translate(528px, 80px);
+  }
+  27% {
+    transform: translate(656px, 80px);
+  }
+  35% {
+    transform: translate(656px, 544px);
+  }
+  42% {
+    transform: translate(1032px, 544px);
+  }
+  43% {
+    transform: translate(1048px, 528px);
+  }
+  46% {
+    transform: translate(1296px, 528px);
+  }
+  48% {
+    transform: translate(1296px, 424px);
+  }
+  51% {
+    transform: translate(1096px, 424px);
+  }
+  55% {
+    transform: translate(1096px, 216px);
+  }
+  61% {
+    transform: translate(1312px, 216px);
+  }
+  65% {
+    transform: translate(1312px, 48px);
+  }
+  72% {
+    transform: translate(760px, 48px);
+  }
+  73% {
+    transform: translate(760px, 168px);
+  }
+  75% {
+    transform: translate(992px, 168px);
+  }
+  77% {
+    transform: translate(992px, 320px);
+  }
+  78% {
+    transform: translate(1053px, 320px);
+    opacity: 100%;
+  }
+  79% {
+    transform: translate(1056px, 320px);
+    opacity: 0%;
+  }
+  80% {
+    transform: translate(1136px, 320px);
+    opacity: 0%;
+  }
+  81% {
+    transform: translate(1137px, 320px);
+    opacity: 100%;
+  }
+  87% {
+    opacity: 1;
+    transform: translate(1355px, 320px);
+  }
+  87.1% {
+    opacity: 0;
+    transform: translate(1359px, 320px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(1360px, 320px);
+  } */
   display: flex;
   justify-content: center;
   align-items: start;
