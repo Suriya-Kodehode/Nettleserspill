@@ -6,7 +6,7 @@ import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import styles from "../CSSModules/game.module.css";
 import Tower from "../components/Tower.jsx";
 import Pause from "../components/Pause.jsx";
-import { mapConfigs } from "../components/GameUtility/mapConfig.jsx";
+import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 
 function Game() {
   const mapName = "newDawn";
