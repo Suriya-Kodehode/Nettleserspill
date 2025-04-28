@@ -12,6 +12,8 @@
 
 .statusContainer {
   grid-area: status;
+
+  padding-left: 8rem;
 }
 .playerStatus {
   width: fit-content;
