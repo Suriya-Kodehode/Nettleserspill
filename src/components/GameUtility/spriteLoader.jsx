@@ -1,4 +1,4 @@
-// spriteLoader.jsx
+
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { enemySprites } from "../GameUtility/enemySprites.jsx";
 
