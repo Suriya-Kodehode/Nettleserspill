@@ -1,6 +1,6 @@
 import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 
-export const spawnEnemies = (config, sprites) => {
+export const spawnEnemies = (config) => {
   const { spawnDelay, waves } = config;
   const timeoutIds = [];
   let waveIndex = 0;
