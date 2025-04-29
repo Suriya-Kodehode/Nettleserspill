@@ -1,76 +1,73 @@
 const ToggleGrid = ({ showGrid, onToggle, gridCellSize, onCellSizeChange }) => {
-    return (
-      <div
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        backgroundColor: "inherit",
+        padding: "10px",
+        borderRadius: "4px",
+        margin: "10px",
+        zIndex: 1,
+      }}
+    >
+      <button
+        onClick={onToggle}
         style={{
-          position: "absolute",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "end",
-          top: 10,
-          right: 10,
-          zIndex: 10,
-          backgroundColor: "inherit",
-          padding: "10px",
+          width: "100px",
+          height: "30px",
+          padding: "2px 10px",
+          fontSize: "1rem",
+          cursor: "pointer",
+          backgroundColor: showGrid ? "#f44336" : "#4CAF50",
+          border: "none",
           borderRadius: "4px",
         }}
       >
-        <button
-          onClick={onToggle}
+        {showGrid ? "Hide Grid" : "Show Grid"}
+      </button>
+      <div
+        style={{
+          marginTop: "10px",
+          fontSize: "0.9rem",
+          visibility: showGrid ? "visible" : "hidden", 
+        }}
+      >
+        <label htmlFor="gridSize" style={{ color: "white" }}>
+          Grid Size:
+        </label>
+        <input
+          id="gridSize"
+          type="range"
+          min="8"
+          max="128"
+          value={gridCellSize}
+          onChange={(e) => onCellSizeChange(Number(e.target.value))}
+          style={{ marginLeft: "5px" }}
+        />
+        <div
           style={{
-            float: "right",
-            width: "100px",
-            height: "30px",
-            padding: "2px 10px",
-            fontSize: "1rem",
-            cursor: "pointer",
-            backgroundColor: showGrid ? "#f44336" : "#4CAF50",
+            marginTop: "5px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          {showGrid ? "Hide Grid" : "Show Grid"}
-        </button>
-        {showGrid && (
-          <div
-            style={{
-              marginTop: "10px",
-              fontSize: "0.9rem",
-            }}
-          >
-            <label htmlFor="gridSize" style={{ color: "white" }}>
-              Grid Size:
-            </label>
-            <input
-              id="gridSize"
-              type="range"
-              min="8"
-              max="128"
-              value={gridCellSize}
-              onChange={(e) => onCellSizeChange(Number(e.target.value))}
-              style={{ marginLeft: "5px" }}
-            />
-            <div
-              style={{
-                marginTop: "5px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ marginLeft: "5px", color: "white" }}>
-                {gridCellSize}px
-              </span>
-              <input
-                type="number"
-                min="8"
-                max="128"
-                value={gridCellSize}
-                onChange={(e) => onCellSizeChange(Number(e.target.value))}
-                style={{ marginLeft: "10px", width: "60px" }}
-              />
-            </div>
-          </div>
-        )}
+          <span style={{ marginLeft: "5px", color: "white" }}>
+            {gridCellSize}px
+          </span>
+          <input
+            type="number"
+            min="8"
+            max="128"
+            value={gridCellSize}
+            onChange={(e) => onCellSizeChange(Number(e.target.value))}
+            style={{ marginLeft: "10px", width: "60px" }}
+          />
+        </div>
       </div>
-    );
-  };
-  
-  export default ToggleGrid;
-  
+    </div>
+  );
+};
+
+export default ToggleGrid;

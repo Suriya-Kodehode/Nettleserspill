@@ -1,19 +1,18 @@
 import { useRef, useEffect } from "react";
 
-const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick }) => {
+const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGrid }) => {
   const canvasRef = useRef(null);
-  // Fixed unit for coordinate calculations (16px regardless of the drawn grid size)
-  const coordinateCellSize = 16;
+  const coordinateCellSize = gridCellSize;
 
   const redrawCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-
-    // Clear previous drawings
+    
     context.clearRect(0, 0, width, height);
 
-    // Draw grid lines based on the adjustable gridCellSize
+    if (!showGrid) return;
+
     context.save();
     context.strokeStyle = "rgba(0, 0, 0, 0.5)";
     context.lineWidth = 1;
@@ -32,10 +31,8 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick }) => {
 
   useEffect(() => {
     redrawCanvas();
-  }, [width, height, gridCellSize]);
+  }, [showGrid, width, height, gridCellSize]);
 
-  // On click, calculate the cell based on a fixed 16px unit.
-  // For now, every placement is allowed.
   const handleClick = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -43,8 +40,7 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick }) => {
     const col = Math.floor(x / coordinateCellSize);
     const row = Math.floor(y / coordinateCellSize);
     console.log(`Clicked coordinate: (${col}, ${row})`);
-    // By default, allow all placements.
-    // Later, you can import placementRules.jsx and check for disallowed coordinates here.
+
     onCellClick && onCellClick({ col, row });
   };
 
@@ -57,8 +53,8 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick }) => {
         position: "absolute",
         top: 0,
         left: 0,
-        pointerEvents: "auto", // Captures click events.
-        zIndex: 1000, // Ensure it's on top if layered with other canvases.
+        pointerEvents: "auto",
+        zIndex: 1000,
       }}
       onClick={handleClick}
     >

@@ -1,31 +1,48 @@
-
 import { useState } from "react";
 import Canvas from "../components/gameComponents/Canvas.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import InteractiveGrid from "../components/Functions/InteractiveGrid.jsx";
+import DisallowedOverlay from "../components/Functions/DisallowedOverlay.jsx";
+import DisallowedButton from "../components/UI/DisallowedButton.jsx";
 import styles from "../CSSModules/game.module.css";
 import Tower from "../components/Tower.jsx";
 import Pause from "../components/Pause.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
-import { isPlacementAllowed } from "../components/GameData/placementRules.jsx";
+import { isPlacementAllowed, enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
 
 function Game() {
   const mapName = "newDawn";
   const spriteName = ["monkey"];
 
-  const [showGrid, setShowGrid] = useState(false);
+  const routes = enemyRoutes[mapName] || [];
+  
+  const [showGrid, setShowGrid] = useState(false); 
+  const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
 
   const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
 
-  // handleCellClick now checks the placementRules logic.
-  // It uses the isPlacementAllowed helper (which in this version denies positions listed
-  // in the restrictPositions object in placementRules.jsx). For now, it logs the result.
+  let allRestricted = new Set();
+  if (placementRules[mapName]) {
+    Object.keys(placementRules[mapName].restrictPositions).forEach((key) =>
+      allRestricted.add(key)
+    );
+  }
+  routes.forEach((route) => {
+    Object.keys(route.cells).forEach((key) => allRestricted.add(key));
+  });
+  const restrictedCellsArray = Array.from(allRestricted);
+
   const handleCellClick = ({ col, row }) => {
-    if (isPlacementAllowed(mapName, col, row)) {
+    const key = `${col},${row}`;
+    const normalAllowed = isPlacementAllowed(mapName, col, row);
+    const inEnemyRoute = routes.some((route) => route.cells[key]);
+
+    if (normalAllowed && !inEnemyRoute) {
       console.log(`Allowed placement at (${col}, ${row}).`);
-      // You can add logic here to place a tower dynamically if desired.
+    } else if (inEnemyRoute) {
+      console.log(`Enemy route at (${col}, ${row}). Placement not allowed.`);
     } else {
       console.warn(`Placement disallowed at (${col}, ${row}).`);
     }
@@ -35,15 +52,16 @@ function Game() {
     <>
       <div>
         <Pause />
-        {/* Original static tower placement remains */}
         <Tower top={420} left={160} />
       </div>
+
       <div className={styles.gameContainer}>
         <div className={styles.statusContainer}>
           <div className={styles.playerStatus}>
             <PlayerStatus player={player} />
           </div>
         </div>
+
         <div className={styles.utilityContainer}>
           <ToggleGrid
             showGrid={showGrid}
@@ -51,7 +69,12 @@ function Game() {
             gridCellSize={gridCellSize}
             onCellSizeChange={setGridCellSize}
           />
+          <DisallowedButton
+            showDisallowed={showDisallowed}
+            toggleShowDisallowed={() => setShowDisallowed(!showDisallowed)}
+          />
         </div>
+
         <div className={styles.mapContainer}>
           <div
             style={{
@@ -61,14 +84,17 @@ function Game() {
             }}
           >
             <Canvas mapName={mapName} sprites={spriteName} />
-
-            {/* Use InteractiveGrid to capture clicks on the grid */}
-            {showGrid && (
-              <InteractiveGrid
-                width={canvasWidth}
-                height={canvasHeight}
+            <InteractiveGrid
+              showGrid={showGrid}
+              width={canvasWidth}
+              height={canvasHeight}
+              gridCellSize={gridCellSize}
+              onCellClick={handleCellClick}
+            />
+            {showDisallowed && (
+              <DisallowedOverlay
+                restrictedCells={restrictedCellsArray}
                 gridCellSize={gridCellSize}
-                onCellClick={handleCellClick}
               />
             )}
           </div>
