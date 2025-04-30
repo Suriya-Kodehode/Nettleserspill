@@ -19,18 +19,29 @@ function Info() {
             range: 'Rekkevidde: 80'
         },
         {
-            name: 'Fiende 1',
-            image: '/images/enemy1.png', // Legg til riktig bildebane
-            description: 'En rask fiende med lav helse.',
-            health: 'Helse: 30',
-            speed: 'Hastighet: Høy'
-        },
-        {
             name: 'Fiende 2',
+<<<<<<< Updated upstream
             image: '/images/Boss.png', // Legg til riktig bildebane
+=======
+            image: '/images/MonkeyAnim.gif', // Legg til riktig bildebane
+>>>>>>> Stashed changes
             description: 'En treg fiende med høy helse.',
             health: 'Helse: 100',
             speed: 'Hastighet: Lav'
+        },
+        {
+            name: 'Heart',
+            image: '/images/icons/mdi_heart.svg', // Legg til riktig bildebane
+            description: 'Hjertet gir deg ekstra liv.',
+            health: 'Helse: 30',
+            speed: 'Hastighet: Høy'
+        }
+        {
+            name: 'Cannon',
+            image: '/images/Cannon.gif', // Legg til riktig bildebane
+            description: 'En kraftig kanon som skyter ett flammende inferno, men med høy skade.',
+            damage: 'Skade: 120',
+            range: 'Rekkevidde: 80'
         }
     ];
 
