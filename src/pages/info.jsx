@@ -32,15 +32,21 @@ function Info() {
             health: 'Helse: 30',
             speed: 'Hastighet: Høy'
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         },
         {
             name: 'Boss',
             image: '/images/Boss.png', // Legg til riktig bildebane
 =======
+=======
+>>>>>>> Stashed changes
         }
         {
             name: 'Cannon',
             image: '/images/Cannon.gif', // Legg til riktig bildebane
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             description: 'En kraftig kanon som skyter ett flammende inferno, men med høy skade.',
             damage: 'Skade: 120',
