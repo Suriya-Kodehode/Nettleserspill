@@ -31,10 +31,17 @@ function Info() {
             description: 'Hjertet gir deg ekstra liv.',
             health: 'Helse: 30',
             speed: 'Hastighet: Høy'
+<<<<<<< Updated upstream
         },
         {
             name: 'Boss',
             image: '/images/Boss.png', // Legg til riktig bildebane
+=======
+        }
+        {
+            name: 'Cannon',
+            image: '/images/Cannon.gif', // Legg til riktig bildebane
+>>>>>>> Stashed changes
             description: 'En kraftig kanon som skyter ett flammende inferno, men med høy skade.',
             damage: 'Skade: 120',
             range: 'Rekkevidde: 80'
