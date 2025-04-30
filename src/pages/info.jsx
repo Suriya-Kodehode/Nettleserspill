@@ -27,7 +27,7 @@ function Info() {
         },
         {
             name: 'Fiende 2',
-            image: '/images/MonkeyAnim.png', // Legg til riktig bildebane
+            image: '/images/Boss.png', // Legg til riktig bildebane
             description: 'En treg fiende med høy helse.',
             health: 'Helse: 100',
             speed: 'Hastighet: Lav'
