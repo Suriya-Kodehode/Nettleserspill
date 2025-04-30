@@ -9,12 +9,10 @@ export const placementRules = Object.entries(restrictedRegions).reduce(
     if (regionData.boundingBoxes && Array.isArray(regionData.boundingBoxes)) {
       regionData.boundingBoxes.forEach((box) => {
         if (box.vertices) {
-          const boxCells = generateBoundingBox(box.vertices);
-          Object.assign(restrictPositions, boxCells);
+          Object.assign(restrictPositions, generateBoundingBox(box.vertices));
         } else if (box.segments && Array.isArray(box.segments)) {
           box.segments.forEach((segment) => {
-            const segCells = generateBoundingBox(segment.vertices);
-            Object.assign(restrictPositions, segCells);
+            Object.assign(restrictPositions, generateBoundingBox(segment.vertices));
           });
         }
       });
@@ -26,20 +24,19 @@ export const placementRules = Object.entries(restrictedRegions).reduce(
         if (waterArea.boundingBoxes && Array.isArray(waterArea.boundingBoxes)) {
           waterArea.boundingBoxes.forEach((box) => {
             if (box.vertices) {
-              const boxCells = generateBoundingBox(box.vertices);
-              Object.assign(restrictPositions, boxCells);
+              Object.assign(restrictPositions, generateBoundingBox(box.vertices));
             } else if (box.segments && Array.isArray(box.segments)) {
               box.segments.forEach((segment) => {
-                const segCells = generateBoundingBox(segment.vertices);
-                Object.assign(restrictPositions, segCells);
+                Object.assign(restrictPositions, generateBoundingBox(segment.vertices));
               });
             }
           });
         }
         if (waterArea.lines && Array.isArray(waterArea.lines)) {
           waterArea.lines.forEach((line) => {
-            const lineCells = generateLineCells(line.start, line.end);
-            lineCells.forEach((cell) => (restrictPositions[cell] = true));
+            generateLineCells(line.start, line.end).forEach(
+              (cell) => (restrictPositions[cell] = true)
+            );
           });
         }
       });
@@ -51,20 +48,19 @@ export const placementRules = Object.entries(restrictedRegions).reduce(
         if (treesArea.boundingBoxes && Array.isArray(treesArea.boundingBoxes)) {
           treesArea.boundingBoxes.forEach((box) => {
             if (box.vertices) {
-              const boxCells = generateBoundingBox(box.vertices);
-              Object.assign(restrictPositions, boxCells);
+              Object.assign(restrictPositions, generateBoundingBox(box.vertices));
             } else if (box.segments && Array.isArray(box.segments)) {
               box.segments.forEach((segment) => {
-                const segCells = generateBoundingBox(segment.vertices);
-                Object.assign(restrictPositions, segCells);
+                Object.assign(restrictPositions, generateBoundingBox(segment.vertices));
               });
             }
           });
         }
         if (treesArea.lines && Array.isArray(treesArea.lines)) {
           treesArea.lines.forEach((line) => {
-            const lineCells = generateLineCells(line.start, line.end);
-            lineCells.forEach((cell) => (restrictPositions[cell] = true));
+            generateLineCells(line.start, line.end).forEach(
+              (cell) => (restrictPositions[cell] = true)
+            );
           });
         }
       });
@@ -73,8 +69,9 @@ export const placementRules = Object.entries(restrictedRegions).reduce(
     // Process global lines
     if (regionData.lines && Array.isArray(regionData.lines)) {
       regionData.lines.forEach((line) => {
-        const lineCells = generateLineCells(line.start, line.end);
-        lineCells.forEach((cell) => (restrictPositions[cell] = true));
+        generateLineCells(line.start, line.end).forEach(
+          (cell) => (restrictPositions[cell] = true)
+        );
       });
     }
 
@@ -86,22 +83,35 @@ export const placementRules = Object.entries(restrictedRegions).reduce(
 
 export const isPlacementAllowed = (mapName, col, row) => {
   const mapRule = placementRules[mapName];
-  if (!mapRule) return true;
-  const key = `${col},${row}`;
-  return !mapRule.restrictPositions[key];
+  return mapRule ? !mapRule.restrictPositions[`${col},${row}`] : true;
 };
 
 export const enemyRoutes = Object.entries(restrictedRegions).reduce(
   (routes, [mapName, regionData]) => {
     if (regionData.enemyRoutes && Array.isArray(regionData.enemyRoutes)) {
-      const processedRoutes = regionData.enemyRoutes.map((route) => ({
+      routes[mapName] = regionData.enemyRoutes.map((route) => ({
         name: route.name,
         cells: generateBoundingBox(route.vertices),
         vertices: route.vertices,
       }));
-      routes[mapName] = processedRoutes;
     }
     return routes;
   },
   {}
 );
+
+// Logs and returns placement results for a given cell.
+export const checkPlacement = (mapName, col, row) => {
+  const key = `${col},${row}`;
+  const normalAllowed = isPlacementAllowed(mapName, col, row);
+  const routes = enemyRoutes[mapName] || [];
+  const inEnemyRoute = routes.some((route) => route.cells[key]);
+  
+  if (normalAllowed && !inEnemyRoute) {
+    console.log(`Allowed placement at (${col}, ${row}).`);
+  } else if (inEnemyRoute) {
+    console.log(`Enemy route at (${col}, ${row}). Placement not allowed.`);
+  } else {
+    console.warn(`Placement disallowed at (${col}, ${row}).`);
+  }
+};

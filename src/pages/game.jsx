@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Canvas from "../components/gameComponents/Canvas.jsx";
+import Canvas from "../components/GameComponents/Canvas.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import InteractiveGrid from "../components/Functions/InteractiveGrid.jsx";
@@ -9,7 +9,7 @@ import styles from "../CSSModules/game.module.css";
 import Tower from "../components/Tower.jsx";
 import Pause from "../components/Pause.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
-import { isPlacementAllowed, enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
+import { isPlacementAllowed, enemyRoutes, placementRules, checkPlacement } from "../components/Functions/placementRules.jsx";
 
 function Game() {
   const mapName = "newDawn";
@@ -17,7 +17,7 @@ function Game() {
 
   const routes = enemyRoutes[mapName] || [];
   
-  const [showGrid, setShowGrid] = useState(false); 
+  const [showGrid, setShowGrid] = useState(false);
   const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
 
@@ -35,17 +35,7 @@ function Game() {
   const restrictedCellsArray = Array.from(allRestricted);
 
   const handleCellClick = ({ col, row }) => {
-    const key = `${col},${row}`;
-    const normalAllowed = isPlacementAllowed(mapName, col, row);
-    const inEnemyRoute = routes.some((route) => route.cells[key]);
-
-    if (normalAllowed && !inEnemyRoute) {
-      console.log(`Allowed placement at (${col}, ${row}).`);
-    } else if (inEnemyRoute) {
-      console.log(`Enemy route at (${col}, ${row}). Placement not allowed.`);
-    } else {
-      console.warn(`Placement disallowed at (${col}, ${row}).`);
-    }
+    checkPlacement(mapName, col, row);
   };
 
   return (
