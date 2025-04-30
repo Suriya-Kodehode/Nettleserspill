@@ -4,8 +4,8 @@ import CanvasGrid from "../components/Functions/CanvasGrid.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import styles from "../CSSModules/game.module.css";
-import Tower from "../components/Tower.jsx";
-import Pause from "../components/Pause.jsx";
+import Tower from "../components/GameEntity/Tower.jsx";
+import Pause from "../components/UI/Pause.jsx";
 import { mapConfigs } from "../components/GameUtility/mapConfig.jsx";
 
 function Game() {
@@ -21,7 +21,8 @@ function Game() {
     <>
       <div>
         <Pause />
-        <Tower top={420} left={160} />
+        <Tower top={410} left={160} />
+        <Tower top={290} left={286} />
       </div>
       <div className={styles.gameContainer}>
         <div className={styles.statusContainer}>

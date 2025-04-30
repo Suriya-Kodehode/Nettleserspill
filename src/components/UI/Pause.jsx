@@ -1,4 +1,4 @@
-import styles from "../CSSModules/pause.module.css";
+import styles from "../../CSSModules/pause.module.css";
 
 function Break() {
   console.log("pause");

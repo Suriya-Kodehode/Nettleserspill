@@ -1,5 +1,14 @@
-.gunner {
-  left: 3px;
+.GunnerPos {
+  height: 100px;
+  left: -3px;
   top: -20px;
   position: absolute;
+}
+
+.Gunner {
+  height: 48px;
+}
+
+.Bomber {
+  height: 48px;
 }

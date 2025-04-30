@@ -9,13 +9,16 @@ export const generateEnemiesForMap = (mapName, sprites) => {
 
   const { spawnIntervals, spriteCount, spawnDelay } = mapConfig;
 
-  const totalCount = Object.values(spriteCount).reduce((sum, count) => sum + count, 0);
+  const totalCount = Object.values(spriteCount).reduce(
+    (sum, count) => sum + count,
+    0
+  );
   const enemies = new Array(totalCount);
   let idx = 0;
 
   for (const [spriteType, count] of Object.entries(spriteCount)) {
-   
-    const { hp: defaultHP, hitbox: defaultHitbox } = getDefaultEnemyProperties(spriteType);
+    const { hp: defaultHP, hitbox: defaultHitbox } =
+      getDefaultEnemyProperties(spriteType);
     for (let i = 0; i < count; i++) {
       enemies[idx] = {
         id: idx + 1,

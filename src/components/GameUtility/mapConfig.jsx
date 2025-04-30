@@ -18,6 +18,3 @@ export const mapConfigs = {
     waveInterval: 20000,
   },
 };
-
-
-
