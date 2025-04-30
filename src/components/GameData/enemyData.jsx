@@ -8,7 +8,7 @@ export const enemiesData = {
         defaultHitbox: {
             x: 0,
             y: 0,
-            width: 32,
+            width: 25,
             height: 32,
         }
     }

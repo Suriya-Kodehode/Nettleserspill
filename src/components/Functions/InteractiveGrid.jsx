@@ -1,3 +1,4 @@
+
 import { useRef, useEffect } from "react";
 
 const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGrid }) => {
@@ -8,9 +9,11 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-    
+
+    // Clear the canvas on every redraw.
     context.clearRect(0, 0, width, height);
 
+    // Only draw grid lines if showGrid is enabled.
     if (!showGrid) return;
 
     context.save();
@@ -34,13 +37,14 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
   }, [showGrid, width, height, gridCellSize]);
 
   const handleClick = (event) => {
-    const rect = canvasRef.current.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     const col = Math.floor(x / coordinateCellSize);
     const row = Math.floor(y / coordinateCellSize);
     console.log(`Clicked coordinate: (${col}, ${row})`);
-
     onCellClick && onCellClick({ col, row });
   };
 
@@ -53,7 +57,7 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
         position: "absolute",
         top: 0,
         left: 0,
-        pointerEvents: "auto",
+        pointerEvents: showGrid ? "auto" : "none",
         zIndex: 1000,
       }}
       onClick={handleClick}
