@@ -100,7 +100,7 @@ const restrictedRegions = {
         boundingBoxes: [
           { name: "trees 1", vertices: [[41,0],[45,0],[45,2],[41,2],[41,0]] },
           { name: "trees 2", vertices: [[55,19],[59,19],[59,20],[55,20],[55,19]] },
-          { name: "trees 3", vertices: [[56,11],[57,21],[57,22],[56,22],[56,11]]},
+          { name: "trees 3", vertices: [[56,21],[57,21],[57,22],[56,22],[56,21]]},
           { name: "trees 5", vertices: [[65,5],[63,5],[63,8],[65,8],[65,5]] },
           { name: "trees 7", vertices: [[67,6],[69,6],[69,7],[67,7],[67,6]] },
         ],
