@@ -78,22 +78,39 @@ const restrictedRegions = {
         boundingBoxes: [
           { name: "Segment 1", vertices: [[45,14],[49,14],[49,19],[45,19],[45,14]] },
           { name: "Segment 3", vertices: [[47,21],[54,21],[54,22],[47,22],[47,21]] },
-          { name: "Segment 5", vertices: [[55,22],[56,22],[56,56],[55,26],[55,22]] },
+          { name: "Segment 5", vertices: [[56,26],[55,26],[55,22],[56,22],[56,26]] },
           { name: "Segment 6", vertices: [[57,24],[63,24],[63,26],[57,26],[57,24]] },
           { name: "Segment 9", vertices: [[51,16],[52,16],[52,23],[51,23],[51,16]] },
+          { name: "Segment 10", vertices: [[53,24],[54,24],[54,25],[53,25],[53,24]] },
         ],
         lines: [
           { name: "Segment 2", start: [46,20], end: [54,20] },
           { name: "Segment 4", start: [50,23], end: [54,23] },
           { name: "Segment 7", start: [57,27], end: [61,27] },
           { name: "Segment 8", start: [50,15], end: [50,23] },
+          { name: "Segment 11", start: [53,17], end: [53,19] },
+          { name: "Segment 12", start: [54,19], end: [53,19] },
+          { name: "Segment 13", start: [59,23], end: [60,23] },
+          { name: "Segment 14", start: [64,24], end: [63,24] },
         ]
       },
     },
     treesAreas: {
       trees: {
         boundingBoxes: [
-          { name: "trees 1", vertices: [[41,0],[45,0],[45,2],[41,2],[41,0]] }
+          { name: "trees 1", vertices: [[41,0],[45,0],[45,2],[41,2],[41,0]] },
+          { name: "trees 2", vertices: [[55,19],[59,19],[59,20],[55,20],[55,19]] },
+          { name: "trees 3", vertices: [[56,11],[57,21],[57,22],[56,22],[56,11]]},
+          { name: "trees 5", vertices: [[65,5],[63,5],[63,8],[65,8],[65,5]] },
+          { name: "trees 7", vertices: [[67,6],[69,6],[69,7],[67,7],[67,6]] },
+        ],
+        lines: [
+          { name: "trees 4", start: [64,10], end: [64,12] },
+          { name: "trees 6", start: [62,6], end: [63,6] },
+          { name: "trees 8", start: [67,8], end: [67,7] },
+          { name: "trees 9", start: [80,0], end: [81,0] },
+          { name: "trees 10", start: [84,0], end: [84,4] },
+          { name: "trees 11", start: [83,0], end: [84,0] },
         ]
       }
     }
