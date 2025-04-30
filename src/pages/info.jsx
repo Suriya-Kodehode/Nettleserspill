@@ -20,11 +20,7 @@ function Info() {
         },
         {
             name: 'Fiende 2',
-<<<<<<< Updated upstream
-            image: '/images/Boss.png', // Legg til riktig bildebane
-=======
             image: '/images/MonkeyAnim.gif', // Legg til riktig bildebane
->>>>>>> Stashed changes
             description: 'En treg fiende med høy helse.',
             health: 'Helse: 100',
             speed: 'Hastighet: Lav'
@@ -35,10 +31,10 @@ function Info() {
             description: 'Hjertet gir deg ekstra liv.',
             health: 'Helse: 30',
             speed: 'Hastighet: Høy'
-        }
+        },
         {
-            name: 'Cannon',
-            image: '/images/Cannon.gif', // Legg til riktig bildebane
+            name: 'Boss',
+            image: '/images/Boss.png', // Legg til riktig bildebane
             description: 'En kraftig kanon som skyter ett flammende inferno, men med høy skade.',
             damage: 'Skade: 120',
             range: 'Rekkevidde: 80'
