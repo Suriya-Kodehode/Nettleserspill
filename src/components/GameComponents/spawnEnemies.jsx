@@ -12,8 +12,7 @@ export const spawnEnemies = (config, sprites) => {
     config.maxRandomDelay !== undefined ? config.maxRandomDelay : 200;
   const maxSpriteSeparation =
     config.maxSpriteSeparation !== undefined ? config.maxSpriteSeparation : 10;
-  const defaultLane =
-    config.defaultLane !== undefined ? config.defaultLane : 0;
+  const defaultLane = config.defaultLane !== undefined ? config.defaultLane : 0;
 
   const waveInterval =
     config.waveInterval !== undefined ? config.waveInterval : 2000;
@@ -37,18 +36,21 @@ export const spawnEnemies = (config, sprites) => {
           maxWaveDelay = precomputedDelay;
         }
         const spriteOffset =
-          Math.random() * maxSpriteSeparation - (maxSpriteSeparation / 2);
+          Math.random() * maxSpriteSeparation - maxSpriteSeparation / 2;
 
-        const { hp: defaultHP, hitbox: defaultHitbox, damage: defaultDamage } =
-          getDefaultEnemyProperties(spriteType);
+        const {
+          hp: defaultHP,
+          hitbox: defaultHitbox,
+          damage: defaultDamage,
+        } = getDefaultEnemyProperties(spriteType);
 
         const enemy = {
           id: `${spriteType}-wave${waveIndex}-${i + 1}`,
           sprite: spriteType,
-          spawnTime: 0, 
+          spawnTime: 0,
           hp: defaultHP,
           hitbox: { ...defaultHitbox },
-          damage: defaultDamage, 
+          damage: defaultDamage,
           lane: defaultLane,
           spriteOffset: spriteOffset,
           randomOffset: randomDelay,
