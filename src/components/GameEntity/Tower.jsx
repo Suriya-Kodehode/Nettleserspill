@@ -3,13 +3,12 @@ import styles from "../../CSSModules/Tower.module.css";
 import { BalloonGunner, BalloonBomber } from "./Defenders.jsx";
 import { generateEnemiesForMap } from "../GameComponents/generateEnemies.jsx";
 import { enemySprites } from "../GameUtility/enemySprites.jsx";
+// import { wavesForNewDawn } from "../GameUtility/mapConfig.jsx";
+// import { mapConfigs } from "../GameUtility/mapConfig.jsx";
 // import { preloadStaticSprites } from "../GameUtility/spriteLoader.jsx";
 // import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 // import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-// import { mapConfigs } from "../GameUtility/mapConfig.jsx";
-// import { computeEnemyDrawProps } from "../GameUtility/computeEnemyProps.jsx";
 // import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
-// import { wavesForNewDawn } from "../GameUtility/waveConfig.jsx";
 // import { computeEnemyDrawProps } from "../GameComponents/Canvas.jsx";
 // import { Canvas } from "../GameComponents/Canvas.jsx";
 
@@ -24,17 +23,9 @@ export default function Tower({ top, left }) {
     const enemies = generateEnemiesForMap("newDawn", enemySprites);
     enemies.forEach((enemy) => {
       console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
-      // console.log("ENEMIES ARRAY:", enemies);
+      console.log("ENEMIES ARRAY:", enemies);
       console.log("TYPE:", Array.isArray(enemies));
     });
-
-    // console.log(getDefaultEnemyProperties("monkey").hitbox.y);
-    // console.log(enemySprites.monkey.defaultHitbox.x);
-    // console.log(enemySprites.monkey.defaultHitbox.y);
-    // console.log(computeEnemyDrawProps.finalX);
-    // console.log(computeEnemyDrawProps.finalY);
-    // console.log(getEnemyPath.time);
-    setIsVisible((prevState) => !prevState);
   }
 
   function T1() {
