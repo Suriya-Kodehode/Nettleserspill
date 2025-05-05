@@ -1,6 +1,6 @@
 import { base_url as base } from "../../config.js";
 
-const url = {
+const imagePath = {
     background: "/images/background",
     enemy: "/images/enemy",
     maps: "/images/maps",
@@ -9,7 +9,7 @@ const url = {
 }
 
 const path = (folderKey, fileName) => {
-    const folderPath = url[folderKey];
+    const folderPath = imagePath[folderKey];
     if (!folderPath) {
         console.error(`Invalid folder key: ${folderKey}`);
         return "";
