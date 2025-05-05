@@ -2,7 +2,7 @@ import { base_url as base } from "../../../config"
 
 export const enemiesData = {
     monkey: {
-        src: `${base}/images/enemy/MonkeyAni.gif`,
+        src: `${base}images/enemy/MonkeyAni.gif`,
         width: 32,
         height: 32,
         defaultHP: 100,
