@@ -22,10 +22,12 @@ export default function Tower({ top, left }) {
 
     const enemies = generateEnemiesForMap("newDawn", enemySprites);
     enemies.forEach((enemy) => {
-      console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
+      // console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
       console.log("ENEMIES ARRAY:", enemies);
       console.log("TYPE:", Array.isArray(enemies));
     });
+
+    setIsVisible((prevState) => !prevState);
   }
 
   function T1() {
