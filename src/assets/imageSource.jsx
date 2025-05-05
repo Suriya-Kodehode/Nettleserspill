@@ -10,7 +10,7 @@ const url = {
 
 const paths = (folderKey, fileName) => `${base}${url[folderKey]}/${fileName}`;
 
-export const EnemyImages = {
+export const enemyImages = {
     monkey: paths("enemy", "monkey.png"),
 };
 

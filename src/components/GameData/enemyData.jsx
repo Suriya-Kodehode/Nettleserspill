@@ -1,8 +1,8 @@
-import { EnemyImages } from "../../assets/imageSource.jsx"
+import { enemyImages } from "../../assets/imageSource.jsx"
 
 export const enemiesData = {
     monkey: {
-        src: EnemyImages.monkey,
+        src: enemyImages.monkey,
         width: 32,
         height: 32,
         defaultHP: 100,
