@@ -3,7 +3,7 @@ import { wavesForNewDawn } from "./waveConfig.jsx";
 
 export const mapConfigs = {
   newDawn: {
-    mapSrc: `${base}/images/map/NewDawn.png`,
+    mapSrc: `${base}images/map/NewDawn.png`,
     width: 1360,
     height: 600,
     offsetX: -16,
