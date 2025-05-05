@@ -1,1 +1,1 @@
-export const base_url = "/Nettleserspill/";
+export const base_url = "/Nettleserspill";

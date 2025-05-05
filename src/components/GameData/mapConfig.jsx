@@ -1,9 +1,9 @@
-import { base_url as base } from "../../../config"
+import { mapImages } from "../../assets/imageSource.jsx";
 import { wavesForNewDawn } from "./waveConfig.jsx";
 
 export const mapConfigs = {
   newDawn: {
-    mapSrc: `${base}images/maps/New%20Dawn.png`,
+    mapSrc: mapImages.newDawn,
     width: 1360,
     height: 600,
     offsetX: -16,

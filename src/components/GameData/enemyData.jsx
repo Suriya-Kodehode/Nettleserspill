@@ -1,8 +1,8 @@
-import { base_url as base } from "../../../config"
+import { EnemyImages } from "../../assets/imageSource.jsx"
 
 export const enemiesData = {
     monkey: {
-        src: `${base}images/enemy/MonkeyAni.gif`,
+        src: EnemyImages.monkey,
         width: 32,
         height: 32,
         defaultHP: 100,

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { base_url as base } from "../../../config";
+import { iconImages } from "../../assets/imageSource.jsx";
 
 class Player {
   constructor(initialHP = 100) {
@@ -22,7 +22,7 @@ class Player {
 
 export const player = new Player();
 
-const PlayerStatus = ({ player, iconUrl = `${base}images/icons/mdi_heart.svg` }) => {
+const PlayerStatus = ({ player, iconUrl = iconImages.heart }) => {
   const [hp, setHp] = useState(player.hp);
 
   useEffect(() => {
