@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../CSSModules/pause.module.css";
+import { iconImages } from "../assets/imageSource.jsx";
 
 export default function Pause() {
   const [isPaused, setIsPaused] = useState(true);
@@ -19,7 +20,7 @@ export default function Pause() {
         {isPaused ? (
           <p>||</p>
         ) : (
-          <img src="/images/icons/play button.svg" alt="Play button" />
+          <img src={iconImages.playButton} alt="Play button" />
         )}
       </button>
     </div>
