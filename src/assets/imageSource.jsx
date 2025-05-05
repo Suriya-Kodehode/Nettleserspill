@@ -1,9 +1,11 @@
 import { base_url as base } from "../../config.js";
 
 const url = {
+    background: "/images/background",
     enemy: "/images/enemy",
     maps: "/images/maps",
     icons: "/images/icons",
+    tower: "/images/tower",
 }
 
 const paths = (folderKey, fileName) => `${base}${url[folderKey]}/${fileName}`;
