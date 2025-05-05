@@ -1,4 +1,4 @@
-import { enemyImages } from "../../assets/imageSource.jsx"
+import { enemyImages } from "../../assets/imageSource.jsx";
 
 export const enemiesData = {
     monkey: {

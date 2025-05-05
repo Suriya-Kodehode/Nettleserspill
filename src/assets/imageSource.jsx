@@ -8,10 +8,17 @@ const url = {
     tower: "/images/tower",
 }
 
-const paths = (folderKey, fileName) => `${base}${url[folderKey]}/${fileName}`;
+const paths = (folderKey, fileName) => {
+    const folderPath = url[folderKey];
+    if (!folderPath) {
+        console.error(`Invalid folder key: ${folderKey}`);
+        return "";
+    }
+    return `${base}${folderPath}/${fileName}`;
+};
 
 export const enemyImages = {
-    monkey: paths("enemy", "monkey.png"),
+    monkey: paths("enemy", "MonkeyAni.gif"),
 };
 
 export const mapImages = {
@@ -19,5 +26,5 @@ export const mapImages = {
 }
 
 export const iconImages = {
-    heart: paths("icons", "heart.png"),
+    heart: paths("icons", "mdi_heart.svg"),
 }
