@@ -13,7 +13,7 @@
 
 .Tower1 {
   /* display: none; */
-  background-image: url(/public/images/tower/BalloonGunner.gif);
+  background-image: url(/images/tower/BalloonGunner.gif);
   position: absolute;
   background-repeat: no-repeat;
   width: 30px;
@@ -29,7 +29,7 @@
 
 .Tower2 {
   /* display: none; */
-  background-image: url(/public/images/tower/BalloonGunner.gif);
+  background-image: url(/images/tower/BalloonGunner.gif);
   background-repeat: no-repeat;
   position: absolute;
   width: 30px;
@@ -44,7 +44,7 @@
 }
 
 .Tower3 {
-  background-image: url(/public/images/tower/BalloonGunner.gif);
+  background-image: url(/images/tower/BalloonGunner.gif);
   /* display: none; */
   background-repeat: no-repeat;
   position: absolute;
