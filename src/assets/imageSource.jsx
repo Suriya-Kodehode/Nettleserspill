@@ -8,7 +8,7 @@ const url = {
     tower: "/images/tower",
 }
 
-const paths = (folderKey, fileName) => {
+const path = (folderKey, fileName) => {
     const folderPath = url[folderKey];
     if (!folderPath) {
         console.error(`Invalid folder key: ${folderKey}`);
@@ -19,26 +19,26 @@ const paths = (folderKey, fileName) => {
 };
 
 export const enemyImages = {
-    monkey: paths("enemy", "MonkeyAni.gif"),
-    boss: paths("enemy", "Boss.png"),
-    cat: paths("enemy", "cat.gif"),
+    monkey: path("enemy", "MonkeyAni.gif"),
+    boss: path("enemy", "Boss.png"),
+    cat: path("enemy", "cat.gif"),
 };
 
 export const mapImages = {
-    newDawn: paths("maps", "New Dawn.png"),
-    bigMap: paths("maps", "BigMap.png"),
-    dirt: paths("maps", "Dirt.png"),
-    easyMap: paths("maps", "EasyMap.png"),
-    map: paths("maps", "map.png"),
-    ThePath: paths("maps", "ThePath.png"),
+    newDawn: path("maps", "New Dawn.png"),
+    bigMap: path("maps", "BigMap.png"),
+    dirt: path("maps", "Dirt.png"),
+    easyMap: path("maps", "EasyMap.png"),
+    map: path("maps", "map.png"),
+    ThePath: path("maps", "ThePath.png"),
 }
 
 export const iconImages = {
-    heart: paths("icons", "mdi_heart.svg"),
-    playButton: paths("icons", "play button.svg"),
-    redBalloon: paths("icons", "Red balloon.svg"),
+    heart: path("icons", "mdi_heart.svg"),
+    playButton: path("icons", "play button.svg"),
+    redBalloon: path("icons", "Red balloon.svg"),
 }
 
 export const towerImages = {
-    balloonGunner: paths("tower", "BalloonGunner.gif"),
+    balloonGunner: path("tower", "BalloonGunner.gif"),
 }
