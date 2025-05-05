@@ -7,9 +7,9 @@ export default function Pause() {
 
   const toggleState = () => {
     if (isPaused) {
-      console.log("playing");
-    } else {
       console.log("paused");
+    } else {
+      console.log("playing");
     }
     setIsPaused(!isPaused);
   };
