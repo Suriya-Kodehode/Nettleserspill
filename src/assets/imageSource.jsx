@@ -14,7 +14,8 @@ const paths = (folderKey, fileName) => {
         console.error(`Invalid folder key: ${folderKey}`);
         return "";
     }
-    return `${base}${folderPath}/${fileName}`;
+    const encodedFileName = encodeURI(fileName);
+    return `${base}${folderPath}/${encodedFileName}`;
 };
 
 export const enemyImages = {
@@ -24,7 +25,7 @@ export const enemyImages = {
 };
 
 export const mapImages = {
-    newDawn: paths("maps", "New%20Dawn.png"),
+    newDawn: paths("maps", "New Dawn.png"),
     bigMap: paths("maps", "BigMap.png"),
     dirt: paths("maps", "Dirt.png"),
     easyMap: paths("maps", "EasyMap.png"),
@@ -34,8 +35,8 @@ export const mapImages = {
 
 export const iconImages = {
     heart: paths("icons", "mdi_heart.svg"),
-    playButton: paths("icons", "play%20button.svg"),
-    redBalloon: paths("icons", "Red%20balloon.svg"),
+    playButton: paths("icons", "play button.svg"),
+    redBalloon: paths("icons", "Red balloon.svg"),
 }
 
 export const towerImages = {
