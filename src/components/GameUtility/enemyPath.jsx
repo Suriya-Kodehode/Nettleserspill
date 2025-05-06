@@ -1,10 +1,10 @@
+
 import { enemyKeyframesByMap } from "../GameData/pathKeyframeData.jsx";
 
 export const totalDurations = {
-    newDawn: 103510,
-   
-  };
-  
+  newDawn: 103510,
+};
+
 export const getEnemyPath = (mapName) => {
   const keyframes = enemyKeyframesByMap[mapName];
   if (!keyframes || keyframes.length === 0) {
@@ -13,10 +13,9 @@ export const getEnemyPath = (mapName) => {
   }
   const totalDuration = totalDurations[mapName] || 60000; 
   return keyframes.map(frame => ({
-     time: (frame.percent / 100) * totalDuration,
+    time: (frame.percent / 100) * totalDuration,
     x: frame.x,
-     y: frame.y,
+    y: frame.y,
     opacity: frame.opacity,
   }));
 };
-  

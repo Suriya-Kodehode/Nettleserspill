@@ -6,19 +6,17 @@ export const mapConfigs = {
     mapSrc: mapImages.newDawn,
     width: 1360,
     height: 600,
-    offsetX: -16,
-    offsetY: -32,
+    offsetX: -16,        
+    offsetY: -32,          
     enemySpawnGap: 3000,
-    spriteCount: { monkey: 1 },
+    spriteCount: { monkey: 1, boss: 1 },
     waves: wavesForNewDawn,
     waveCount: wavesForNewDawn.length,
     spawnDelay: 1000,
     maxRandomDelay: 200,
     maxSpriteSeparation: 10,
     defaultLane: 0,
+    centerLane: 1,       
     waveInterval: 20000,
   },
 };
-
-
-

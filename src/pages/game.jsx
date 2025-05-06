@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Canvas from "../components/GameComponents/Canvas.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
@@ -14,7 +13,7 @@ import { enemyRoutes, placementRules, checkPlacement } from "../components/Funct
 
 function Game() {
   const mapName = "newDawn";
-  const spriteName = ["monkey"];
+  const enemySprites = ["monkey"];
   const routes = enemyRoutes[mapName] || [];
 
   const [showGrid, setShowGrid] = useState(false);
@@ -89,7 +88,7 @@ function Game() {
           >
             <Canvas
               mapName={mapName}
-              sprites={spriteName}
+              sprites={enemySprites}
               onEnemyClick={setSelectedEnemy}
               selectedEnemy={selectedEnemy}
             />

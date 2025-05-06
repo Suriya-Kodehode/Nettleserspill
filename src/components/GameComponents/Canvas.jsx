@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, useState, useMemo } from "react";
 import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
@@ -6,31 +5,50 @@ import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
 import { renderEnemies, getClickedEnemy } from "../GameUtility/enemyRenderer.jsx";
+import { enemiesData } from "../GameData/enemyData.jsx";
 
 const Canvas = ({
   mapName = "newDawn",
   sprites = ["monkey"],
+  towers = [],
   style = {},
   offsetMultiplier = 3,
   onEnemyClick,
-  selectedEnemy,  
+  selectedEnemy,
 }) => {
   const canvasRef = useRef(null);
   const gameMapRef = useRef(null);
   const bgCanvasRef = useRef(null);
-  const timeoutIdsRef = useRef([]);
+  const spawnTimeoutIdsRef = useRef([]);
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const [bgLoaded, setBgLoaded] = useState(false);
-  const { images: enemyImages } = preloadStaticSprites(sprites);
-  const animatedFramesRef = useRef({});
 
+  const mapConfig = mapConfigs[mapName];
+
+  const enemyTypesFromWaves = new Set();
+  if (mapConfig && mapConfig.waves) {
+    mapConfig.waves.forEach((wave) => {
+      if (wave.enemies) {
+        Object.keys(wave.enemies).forEach((enemyType) => {
+          enemyTypesFromWaves.add(enemyType);
+        });
+      }
+      if (wave.boss && wave.boss.spawn) {
+        enemyTypesFromWaves.add("boss");
+      }
+    });
+  }
+  const finalSprites = [
+    ...new Set([...(sprites || []), ...Array.from(enemyTypesFromWaves)]),
+  ];
+  const { images: assetImages } = preloadStaticSprites(finalSprites);
+  const animatedFramesRef = useRef({});
   useEffect(() => {
-    loadAnimatedFrames(sprites).then((mapping) => {
+    loadAnimatedFrames(finalSprites).then((mapping) => {
       animatedFramesRef.current = mapping;
     });
-  }, [sprites]);
-
+  }, [finalSprites]);
   useEffect(() => {
     enemiesRef.current = enemies;
   }, [enemies]);
@@ -40,7 +58,6 @@ const Canvas = ({
     bgLoadedRef.current = bgLoaded;
   }, [bgLoaded]);
 
-  const mapConfig = mapConfigs[mapName];
   const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
 
   const scale = 0.8;
@@ -49,8 +66,10 @@ const Canvas = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-    const { width, height, offsetX, offsetY, spawnDelay } = mapConfig;
 
+    const { width, height, offsetX, offsetY } = mapConfig;
+
+  
     if (!gameMapRef.current) {
       gameMapRef.current = new Image();
     }
@@ -67,19 +86,31 @@ const Canvas = ({
         console.error(`Failed to load map image: ${mapConfig.mapSrc}`);
     }
 
-    const { spawnWave, timeoutIds } = spawnEnemies(mapConfig, sprites);
-    timeoutIdsRef.current = timeoutIds;
-    const startTimeout = setTimeout(() => {
-      spawnWave((enemyArr) => setEnemies(enemyArr));
-    }, spawnDelay);
-    timeoutIdsRef.current.push(startTimeout);
-
     let animationFrameId;
     const render = (timestamp) => {
       context.clearRect(0, 0, width, height);
       if (bgLoadedRef.current && bgCanvasRef.current) {
         context.drawImage(bgCanvasRef.current, 0, 0);
       }
+      const resolvedAnimated = {};
+      finalSprites.forEach((sprite) => {
+        if (assetImages[sprite]) {
+          resolvedAnimated[sprite] =
+            animatedFramesRef.current[sprite] &&
+            animatedFramesRef.current[sprite].length > 0
+              ? animatedFramesRef.current[sprite]
+              : [assetImages[sprite]];
+        } else if (enemiesData[sprite] && enemiesData[sprite].src) {
+          const fallback = new Image();
+          fallback.src = enemiesData[sprite].src;
+          resolvedAnimated[sprite] = [fallback];
+        } else {
+          console.warn(`Missing asset image for sprite "${sprite}".`);
+          resolvedAnimated[sprite] = [];
+        }
+      });
+      const animatedFramesForRenderer = { current: resolvedAnimated };
+
       renderEnemies(
         context,
         enemiesRef.current,
@@ -88,11 +119,28 @@ const Canvas = ({
         offsetY,
         offsetMultiplier,
         timestamp,
-        enemyImages,
-        animatedFramesRef,
-        selectedEnemy, 
-        scale 
+        assetImages,
+        animatedFramesForRenderer,
+        selectedEnemy,
+        scale
       );
+
+      if (towers && towers.length > 0) {
+        towers.forEach((tower) => {
+          const towerFrames =
+            resolvedAnimated[tower.sprite] ||
+            (assetImages[tower.sprite] ? [assetImages[tower.sprite]] : []);
+          if (towerFrames.length > 0) {
+            context.drawImage(
+              towerFrames[0],
+              tower.x,
+              tower.y,
+              tower.width,
+              tower.height
+            );
+          }
+        });
+      }
       animationFrameId = requestAnimationFrame(render);
     };
     animationFrameId = requestAnimationFrame(render);
@@ -106,12 +154,11 @@ const Canvas = ({
         clickY,
         enemiesRef.current,
         enemyPath,
-        offsetX,
-        offsetY,
+        mapConfig.offsetX,
+        mapConfig.offsetY,
         offsetMultiplier,
-        scale 
+        scale
       );
-  
       if (onEnemyClick) {
         onEnemyClick(clickedEnemy || null);
       }
@@ -119,11 +166,34 @@ const Canvas = ({
     canvas.addEventListener("click", handleCanvasClick);
 
     return () => {
-      timeoutIdsRef.current.forEach(clearTimeout);
       cancelAnimationFrame(animationFrameId);
       canvas.removeEventListener("click", handleCanvasClick);
     };
-  }, [selectedEnemy]);
+  }, [
+    finalSprites,
+    assetImages,
+    enemyPath,
+    offsetMultiplier,
+    onEnemyClick,
+    scale,
+    towers,
+    mapConfig,
+  ]);
+  useEffect(() => {
+    const { spawnDelay } = mapConfig;
+    // console.log("Starting enemy spawn process with spawnDelay:", spawnDelay);
+    const { spawnWave, timeoutIds } = spawnEnemies(mapConfig);
+    spawnTimeoutIdsRef.current = timeoutIds;
+    const initialTimeout = setTimeout(() => {
+      // console.log("Calling spawnWave...");
+      spawnWave(setEnemies);
+    }, spawnDelay);
+    spawnTimeoutIdsRef.current.push(initialTimeout);
+
+    return () => {
+      spawnTimeoutIdsRef.current.forEach((id) => clearTimeout(id));
+    };
+  }, []); 
 
   return (
     <canvas

@@ -1,8 +1,8 @@
-
 export const wavesForNewDawn = [
-    { monkey: 10 }, // 1st wave
-    { monkey: 12 }, // 2nd wave
-    { monkey: 14 }, // 3rd wave
-    { monkey: 16 }, // 4th wave
-    { monkey: 20 }, // 5th wave
-]
+    { enemies: { monkey: 10 } },
+    { enemies: { monkey: 12 } },
+    { enemies: { monkey: 14 } },
+    { enemies: { monkey: 16 } },
+    { enemies: { monkey: 10 }, boss: { spawn: true, count: 1 } },
+  ];
+  
