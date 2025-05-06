@@ -34,14 +34,18 @@ export const renderEnemies = (
       offsetX,
       offsetY
     );
-    const adjustedX = finalX + enemy.spriteOffset * offsetMultiplier;
-    const adjustedY = finalY;
+    const baseX = finalX + enemy.spriteOffset * offsetMultiplier;
+    const baseY = finalY;
 
     const spriteData = enemiesData[enemy.sprite];
     if (!spriteData) {
       console.error(`Missing enemy data for sprite: ${enemy.sprite}`);
       return;
     }
+
+    const { pathOffset = { x: 0, y: 0 } } = spriteData;
+    const adjustedX = baseX + pathOffset.x;
+    const adjustedY = baseY + pathOffset.y;
 
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
@@ -51,7 +55,6 @@ export const renderEnemies = (
 
     let drawX = centerX - drawnWidth / 2;
     let drawY = centerY - drawnHeight / 2;
-
     if (enemy.sprite === "boss") {
       drawX += enemy.bossOffsetX || 0;
       drawY += enemy.bossOffsetY || 0;
@@ -78,7 +81,6 @@ export const renderEnemies = (
 
     if (selectedEnemy && enemy === selectedEnemy) {
       let hitbox = spriteData.defaultHitbox;
-      
       const outlineSettings = spriteData.outline || {};
 
       const margin = outlineSettings.margin !== undefined ? outlineSettings.margin : 0;
@@ -91,7 +93,6 @@ export const renderEnemies = (
 
       const shiftX = outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
       const shiftY = outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
-
       const outlineColor = outlineSettings.color || (enemy.sprite === "boss" ? "gold" : "red");
       const outlineLineWidth = outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : (enemy.sprite === "boss" ? 5 : 3);
       const outlineAlpha = outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
@@ -130,11 +131,15 @@ export const getClickedEnemy = (
       globalOffsetX,
       globalOffsetY
     );
-    const adjustedX = finalX + enemy.spriteOffset * offsetMultiplier;
-    const adjustedY = finalY;
+    const baseX = finalX + enemy.spriteOffset * offsetMultiplier;
+    const baseY = finalY;
 
     const spriteData = enemiesData[enemy.sprite];
     if (!spriteData) continue;
+
+    const { pathOffset = { x: 0, y: 0 } } = spriteData;
+    const adjustedX = baseX + pathOffset.x;
+    const adjustedY = baseY + pathOffset.y;
 
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
@@ -142,7 +147,6 @@ export const getClickedEnemy = (
     const centerY = adjustedY + spriteData.height / 2;
     let drawX = centerX - drawnWidth / 2;
     let drawY = centerY - drawnHeight / 2;
-
     if (enemy.sprite === "boss") {
       drawX += enemy.bossOffsetX || 0;
       drawY += enemy.bossOffsetY || 0;
