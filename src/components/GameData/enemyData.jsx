@@ -30,6 +30,7 @@ export const enemiesData = {
     defaultHitbox: { x: 0, y: 0, width: 25, height: 32 },
     outline: createOutline(5, 0, 0, "red", 3, 0.7),
     pathOffset: { x: 0, y: 0 },
+    frameDelay: 100,
   },
   boss: {
     name: "Boss",

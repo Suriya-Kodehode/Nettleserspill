@@ -49,7 +49,6 @@ export const renderEnemies = (
 
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
-
     const centerX = adjustedX + spriteData.width / 2;
     const centerY = adjustedY + spriteData.height / 2;
 
@@ -63,9 +62,10 @@ export const renderEnemies = (
     let spriteToDraw = null;
     const frames = animatedFramesRef.current[enemy.sprite];
     if (frames && frames.length > 0) {
-      const frameDelay = spriteData.frameDelay || 100;
+      const frameDelay = frames.frameDelay || spriteData.frameDelay || 100;
       const frameIndex = Math.floor(timestamp / frameDelay) % frames.length;
       spriteToDraw = frames[frameIndex];
+      // (Optional debug: console.log(`Animating ${enemy.sprite}: frame ${frameIndex}/${frames.length}`);)
     } else {
       spriteToDraw = enemyImages[enemy.sprite];
     }
@@ -75,14 +75,13 @@ export const renderEnemies = (
     if (spriteToDraw) {
       context.drawImage(spriteToDraw, drawX, drawY, drawnWidth, drawnHeight);
     } else {
-      console.error(`Sprite image not loaded: ${enemy.sprite}`);
+      console.error(`Sprite image not loaded for ${enemy.sprite}`);
     }
     context.restore();
 
     if (selectedEnemy && enemy === selectedEnemy) {
       let hitbox = spriteData.defaultHitbox;
       const outlineSettings = spriteData.outline || {};
-
       const margin = outlineSettings.margin !== undefined ? outlineSettings.margin : 0;
       hitbox = {
         x: hitbox.x,
@@ -94,7 +93,8 @@ export const renderEnemies = (
       const shiftX = outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
       const shiftY = outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
       const outlineColor = outlineSettings.color || (enemy.sprite === "boss" ? "gold" : "red");
-      const outlineLineWidth = outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : (enemy.sprite === "boss" ? 5 : 3);
+      const outlineLineWidth =
+        outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : (enemy.sprite === "boss" ? 5 : 3);
       const outlineAlpha = outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
 
       const outlineWidth = hitbox.width * scale;
@@ -136,11 +136,9 @@ export const getClickedEnemy = (
 
     const spriteData = enemiesData[enemy.sprite];
     if (!spriteData) continue;
-
     const { pathOffset = { x: 0, y: 0 } } = spriteData;
     const adjustedX = baseX + pathOffset.x;
     const adjustedY = baseY + pathOffset.y;
-
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
     const centerX = adjustedX + spriteData.width / 2;
@@ -151,7 +149,6 @@ export const getClickedEnemy = (
       drawX += enemy.bossOffsetX || 0;
       drawY += enemy.bossOffsetY || 0;
     }
-
     if (
       clickX >= drawX &&
       clickX <= drawX + drawnWidth &&

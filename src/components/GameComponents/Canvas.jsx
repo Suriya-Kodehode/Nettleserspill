@@ -23,7 +23,6 @@ const Canvas = ({
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const [bgLoaded, setBgLoaded] = useState(false);
-
   const mapConfig = mapConfigs[mapName];
 
   const enemyTypesFromWaves = new Set();
@@ -42,6 +41,7 @@ const Canvas = ({
   const finalSprites = [
     ...new Set([...(sprites || []), ...Array.from(enemyTypesFromWaves)]),
   ];
+
   const { images: assetImages } = preloadStaticSprites(finalSprites);
   const animatedFramesRef = useRef({});
   useEffect(() => {
@@ -49,6 +49,7 @@ const Canvas = ({
       animatedFramesRef.current = mapping;
     });
   }, [finalSprites]);
+
   useEffect(() => {
     enemiesRef.current = enemies;
   }, [enemies]);
@@ -59,17 +60,14 @@ const Canvas = ({
   }, [bgLoaded]);
 
   const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
-
   const scale = 0.8;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-
     const { width, height, offsetX, offsetY } = mapConfig;
 
-  
     if (!gameMapRef.current) {
       gameMapRef.current = new Image();
     }
@@ -92,14 +90,25 @@ const Canvas = ({
       if (bgLoadedRef.current && bgCanvasRef.current) {
         context.drawImage(bgCanvasRef.current, 0, 0);
       }
+
       const resolvedAnimated = {};
       finalSprites.forEach((sprite) => {
-        if (assetImages[sprite]) {
-          resolvedAnimated[sprite] =
+        if (
+          enemiesData[sprite] &&
+          enemiesData[sprite].src.toLowerCase().endsWith(".gif")
+        ) {
+          if (
             animatedFramesRef.current[sprite] &&
             animatedFramesRef.current[sprite].length > 0
-              ? animatedFramesRef.current[sprite]
-              : [assetImages[sprite]];
+          ) {
+            resolvedAnimated[sprite] = animatedFramesRef.current[sprite];
+          } else {
+            const fallback = new Image();
+            fallback.src = enemiesData[sprite].src;
+            resolvedAnimated[sprite] = [fallback];
+          }
+        } else if (assetImages[sprite]) {
+          resolvedAnimated[sprite] = [assetImages[sprite]];
         } else if (enemiesData[sprite] && enemiesData[sprite].src) {
           const fallback = new Image();
           fallback.src = enemiesData[sprite].src;
@@ -179,13 +188,12 @@ const Canvas = ({
     towers,
     mapConfig,
   ]);
+
   useEffect(() => {
     const { spawnDelay } = mapConfig;
-    // console.log("Starting enemy spawn process with spawnDelay:", spawnDelay);
     const { spawnWave, timeoutIds } = spawnEnemies(mapConfig);
     spawnTimeoutIdsRef.current = timeoutIds;
     const initialTimeout = setTimeout(() => {
-      // console.log("Calling spawnWave...");
       spawnWave(setEnemies);
     }, spawnDelay);
     spawnTimeoutIdsRef.current.push(initialTimeout);
@@ -193,7 +201,7 @@ const Canvas = ({
     return () => {
       spawnTimeoutIdsRef.current.forEach((id) => clearTimeout(id));
     };
-  }, []); 
+  }, [mapConfig]);
 
   return (
     <canvas
