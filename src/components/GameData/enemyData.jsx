@@ -40,6 +40,6 @@ export const enemiesData = {
     damage: 10,
     defaultHitbox: { x: 0, y: 0, width: 50, height: 64 },
     outline: createOutline(10, 16, 32, "gold", 5, 0.7),
-    pathOffset: { x: -16, y: 0 },
+    pathOffset: { x: 0, y: 0 },
   },
 };
