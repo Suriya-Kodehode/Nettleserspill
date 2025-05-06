@@ -19,25 +19,23 @@ function Info() {
             range: 'Rekkevidde: 80'
         },
         {
-            name: 'Fiende 2',
+            name: 'Monke',
             image: '/images/MonkeyAnim.gif', // Legg til riktig bildebane
-            description: 'En treg fiende med høy helse.',
-            health: 'Helse: 100',
-            speed: 'Hastighet: Lav'
+            description: 'En kjapp ape med lite helse.',
+            health: 'Helse: Lav',
+            speed: 'Hastighet: Kjapp'
         },
         {
             name: 'Heart',
             image: '/images/icons/mdi_heart.svg', // Legg til riktig bildebane
-            description: 'Hjertet gir deg ekstra liv.',
-            health: 'Helse: 30',
-            speed: 'Hastighet: Høy'
+            description: 'Mister du alt av liv så er du done.',
         },
         {
             name: 'Boss',
             image: '/images/Boss.png', // Legg til riktig bildebane
-            description: 'En mektig fiende med høy helse og rask hastighet.',
+            description: 'En megasvær ape som ødelegger alt i sin vei.',
             health: 'Helse: 330',
-            speed: 'Hastighet: Høy'
+            speed: 'Hastighet: Lav'
         }
     ];
 
@@ -61,7 +59,7 @@ function Info() {
                     ))}
                 </div>
                 <Link to="/" className={styles.backLink}>
-                    Tilbake til start
+                    Tilbake til main menu
                 </Link>
             </div>
         </>

@@ -10,7 +10,7 @@
 .container {
     padding: 20px;
     font-family: 'YangBagus', sans-serif; /* Standard font for resten av siden */
-    background-color: #314915; /* Lys bakgrunnsfarge */
+    background-color: #43720d; /* Lys bakgrunnsfarge */
 }
 
 /* Tittel-stil */
@@ -64,6 +64,7 @@ h1 {
     font-family: 'YangBagus', sans-serif; /* Bruker Yabangus-fonten */
     font-size: 24px;
     color: #9210c5;
+    
 }
 
 /* Beskrivelse og detaljer */
@@ -71,6 +72,7 @@ h1 {
     margin: 5px 0;
     font-size: 16px;
     color: #666;
+    
 }
 
 /* Tilbake-lenke */
