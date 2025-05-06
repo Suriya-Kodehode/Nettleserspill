@@ -3,30 +3,16 @@ import styles from "../../CSSModules/Tower.module.css";
 import { BalloonGunner, BalloonBomber } from "./Defenders.jsx";
 import { generateEnemiesForMap } from "../GameComponents/generateEnemies.jsx";
 import { enemySprites } from "../GameUtility/enemySprites.jsx";
-// import { wavesForNewDawn } from "../GameUtility/mapConfig.jsx";
-// import { mapConfigs } from "../GameUtility/mapConfig.jsx";
-// import { preloadStaticSprites } from "../GameUtility/spriteLoader.jsx";
-// import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
-// import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-// import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
-// import { computeEnemyDrawProps } from "../GameComponents/Canvas.jsx";
-// import { Canvas } from "../GameComponents/Canvas.jsx";
 
 export default function Tower({ top, left }) {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTower, setActiveTower] = useState(null);
 
   function selector() {
-    // console.log(left);
-    // console.log(top);
-
     const enemies = generateEnemiesForMap("newDawn", enemySprites);
     enemies.forEach((enemy) => {
-      // console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
-      console.log("ENEMIES ARRAY:", enemies);
-      console.log("TYPE:", Array.isArray(enemies));
+      console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
     });
-
     setIsVisible((prevState) => !prevState);
   }
 
