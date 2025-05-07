@@ -1,6 +1,6 @@
 
 import { useRef, useEffect } from "react";
-import { drawGrid } from "../Functions/drawGrid.jsx";
+import { drawGrid } from "../Functions/GridTool/drawGrid";
 
 const CanvasGrid = ({ width, height, gridCellSize = 16, style = {} }) => {
   const gridCanvasRef = useRef(null);

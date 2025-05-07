@@ -1,5 +1,5 @@
 import restrictedRegions from "../GameData/restrictedRegions.jsx";
-import { generateBoundingBox, generateLineCells } from "../Functions/gridUtils.jsx";
+import { generateBoundingBox, generateLineCells } from "../Functions/GridTool/gridUtils.jsx";
 
 // For each cell in cellsObj, add the given name to restrictPositions.
 const addCells = (cellsObj, name, restrictPositions) => {
