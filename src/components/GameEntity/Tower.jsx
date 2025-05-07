@@ -9,9 +9,10 @@ export default function Tower({ top, left }) {
   const [activeTower, setActiveTower] = useState(null);
 
   function selector() {
+    checkCollision;
     const enemies = generateEnemiesForMap("newDawn", enemySprites);
     enemies.forEach((enemy) => {
-      console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
+      // console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
     });
     setIsVisible((prevState) => !prevState);
   }
@@ -26,6 +27,27 @@ export default function Tower({ top, left }) {
 
   function T3() {
     setActiveTower("T3");
+  }
+
+  function checkCollision() {
+    const tower = document
+      .getElementsByClassName("styles.GunnerPos")
+      .getBoundingClientRect();
+    const enemy = document
+      .getElementsByTagName("enemy.id")
+      .getBoundingClientRect();
+
+    const isInRadius = !(
+      enemy.right < tower.left ||
+      enemy.left > tower.right ||
+      enemy.bottom < tower.top ||
+      enemy.top > tower.bottom
+    );
+
+    if (isInRadius) {
+      console.log("Enemy is within tower radius! Fire!");
+      // Your function here, e.g. tower.fireAt(enemy)
+    }
   }
 
   return (

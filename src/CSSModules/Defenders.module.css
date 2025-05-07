@@ -1,8 +1,15 @@
 .GunnerPos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100px;
-  left: -3px;
-  top: -20px;
+  left: -45px;
+  top: -50px;
+  border-radius: 50%;
+  width: 125px;
+  height: 130px;
   position: absolute;
+  background-color: #00caca54;
 }
 
 .Gunner {
