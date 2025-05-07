@@ -1,8 +1,8 @@
-import { computeEnemyDrawProps } from "./computeEnemyProps.jsx";
-import { enemiesData } from "../GameData/enemyData.jsx";
-import { playerTakeDamage } from "../GameComponents/playerTakeDamage.jsx";
+import { computeEnemyDrawProps } from "../../GameUtility/computeEnemyProps.jsx";
+import { enemiesData } from "../../GameData/enemyData.jsx";
+import { playerTakeDamage } from "../../GameComponents/playerTakeDamage.jsx";
 
-export const renderEnemies = (
+export const renderEnemiesOnCanvas = (
   context,
   enemies,
   enemyPath,
@@ -18,6 +18,7 @@ export const renderEnemies = (
   enemies.forEach((enemy) => {
     const cycleTime = timestamp - enemy.spawnTime;
     if (cycleTime < 0) return;
+
 
     const lastKeyframe = enemyPath[enemyPath.length - 1];
     if (cycleTime >= lastKeyframe.time) {
@@ -42,7 +43,6 @@ export const renderEnemies = (
       console.error(`Missing enemy data for sprite: ${enemy.sprite}`);
       return;
     }
-
     const { pathOffset = { x: 0, y: 0 } } = spriteData;
     const adjustedX = baseX + pathOffset.x;
     const adjustedY = baseY + pathOffset.y;
@@ -51,12 +51,12 @@ export const renderEnemies = (
     const drawnHeight = spriteData.height * scale;
     const centerX = adjustedX + spriteData.width / 2;
     const centerY = adjustedY + spriteData.height / 2;
-
     let drawX = centerX - drawnWidth / 2;
     let drawY = centerY - drawnHeight / 2;
-    if (enemy.sprite === "boss") {
-      drawX += enemy.bossOffsetX || 0;
-      drawY += enemy.bossOffsetY || 0;
+
+    if (spriteData.offsetAdjustments) {
+      drawX += spriteData.offsetAdjustments.x || 0;
+      drawY += spriteData.offsetAdjustments.y || 0;
     }
 
     let spriteToDraw = null;
@@ -65,7 +65,6 @@ export const renderEnemies = (
       const frameDelay = frames.frameDelay || spriteData.frameDelay || 100;
       const frameIndex = Math.floor(timestamp / frameDelay) % frames.length;
       spriteToDraw = frames[frameIndex];
-      // (Optional debug: console.log(`Animating ${enemy.sprite}: frame ${frameIndex}/${frames.length}`);)
     } else {
       spriteToDraw = enemyImages[enemy.sprite];
     }
@@ -90,11 +89,12 @@ export const renderEnemies = (
         height: hitbox.height + margin,
       };
 
+
       const shiftX = outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
       const shiftY = outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
-      const outlineColor = outlineSettings.color || (enemy.sprite === "boss" ? "gold" : "red");
-      const outlineLineWidth =
-        outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : (enemy.sprite === "boss" ? 5 : 3);
+      
+      const outlineColor = outlineSettings.outlineColor || outlineSettings.color || "red";
+      const outlineLineWidth = outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : 3;
       const outlineAlpha = outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
 
       const outlineWidth = hitbox.width * scale;
@@ -133,9 +133,9 @@ export const getClickedEnemy = (
     );
     const baseX = finalX + enemy.spriteOffset * offsetMultiplier;
     const baseY = finalY;
-
     const spriteData = enemiesData[enemy.sprite];
     if (!spriteData) continue;
+    
     const { pathOffset = { x: 0, y: 0 } } = spriteData;
     const adjustedX = baseX + pathOffset.x;
     const adjustedY = baseY + pathOffset.y;
@@ -145,10 +145,12 @@ export const getClickedEnemy = (
     const centerY = adjustedY + spriteData.height / 2;
     let drawX = centerX - drawnWidth / 2;
     let drawY = centerY - drawnHeight / 2;
-    if (enemy.sprite === "boss") {
-      drawX += enemy.bossOffsetX || 0;
-      drawY += enemy.bossOffsetY || 0;
+    
+    if (spriteData.offsetAdjustments) {
+      drawX += spriteData.offsetAdjustments.x || 0;
+      drawY += spriteData.offsetAdjustments.y || 0;
     }
+    
     if (
       clickX >= drawX &&
       clickX <= drawX + drawnWidth &&

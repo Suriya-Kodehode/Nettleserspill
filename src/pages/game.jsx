@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import Canvas from "../components/GameComponents/Canvas.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
 import ToggleGrid from "../components/UI/ToggleGrid.jsx";
@@ -6,7 +7,6 @@ import InteractiveGrid from "../components/Functions/GridTool/InteractiveGrid.js
 import DisallowedOverlay from "../components/Functions/GridTool/DisallowedOverlay.jsx";
 import DisallowedButton from "../components/UI/DisallowedButton.jsx";
 import styles from "../CSSModules/game.module.css";
-import Tower from "../components/GameEntity/Tower.jsx";
 import Pause from "../components/UI/Pause.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 import {
@@ -14,6 +14,7 @@ import {
   placementRules,
   checkPlacement,
 } from "../components/Functions/placementRules.jsx";
+import TowerSelection from "../components/UI/TowerSelection.jsx";
 
 function Game() {
   const mapName = "newDawn";
@@ -24,6 +25,8 @@ function Game() {
   const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
+  const [selectedTower, setSelectedTower] = useState(null);
+  const [placedTowers, setPlacedTowers] = useState([]);
 
   const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
 
@@ -38,18 +41,43 @@ function Game() {
   });
   const restrictedCellsArray = Array.from(allRestricted);
 
+  const towerSelectionRef = useRef(null);
+
   const handleCellClick = ({ col, row }) => {
-    checkPlacement(mapName, col, row);
+    if (selectedTower) {
+      const cellKey = `${col}-${row}`;
+      if (restrictedCellsArray.includes(cellKey)) {
+        console.log("This cell is restricted. Cannot place tower here.");
+        return;
+      }
+      const left = col * gridCellSize;
+      const top = row * gridCellSize;
+      const newTower = { ...selectedTower, top, left };
+      setPlacedTowers((prev) => [...prev, newTower]);
+      setSelectedTower(null);
+    } else {
+      checkPlacement(mapName, col, row);
+    }
   };
+
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (
+        towerSelectionRef.current &&
+        !towerSelectionRef.current.contains(e.target)
+      ) {
+        setSelectedTower(null);
+      }
+    };
+    document.addEventListener("mousedown", handleDocumentClick);
+    return () => document.removeEventListener("mousedown", handleDocumentClick);
+  }, []);
 
   return (
     <>
       <div>
         <Pause />
-        <Tower top={410} left={160} />
-        <Tower top={290} left={286} />
       </div>
-
       <div className={styles.gameContainer}>
         <div className={styles.statusContainer}>
           <div className={styles.playerStatus}>
@@ -82,6 +110,11 @@ function Game() {
             showDisallowed={showDisallowed}
             toggleShowDisallowed={() => setShowDisallowed(!showDisallowed)}
           />
+          <TowerSelection
+            ref={towerSelectionRef}
+            selectedTower={selectedTower}
+            onTowerSelect={setSelectedTower}
+          />
         </div>
         <div className={styles.mapContainer}>
           <div
@@ -94,6 +127,7 @@ function Game() {
             <Canvas
               mapName={mapName}
               sprites={enemySprites}
+              towers={placedTowers}
               onEnemyClick={setSelectedEnemy}
               selectedEnemy={selectedEnemy}
             />

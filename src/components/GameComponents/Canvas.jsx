@@ -1,17 +1,12 @@
-import { useRef, useEffect, useState, useMemo } from "react";
-import {
-  preloadStaticSprites,
-  loadAnimatedFrames,
-} from "../GameUtility/spriteLoader.jsx";
+
+import React, { useRef, useEffect, useState, useMemo } from "react";
+import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-import {
-  renderEnemies,
-  getClickedEnemy,
-} from "../GameUtility/enemyRenderer.jsx";
-import { enemiesData } from "../GameData/enemyData.jsx";
+import { getClickedEnemy, renderEnemiesOnCanvas } from "../GameComponents/Renderer/enemyRender.jsx";
+import { renderTowersOnCanvas } from "../GameComponents/Renderer/towerRender.jsx";
 
 const Canvas = ({
   mapName = "newDawn",
@@ -31,24 +26,13 @@ const Canvas = ({
   const [bgLoaded, setBgLoaded] = useState(false);
   const mapConfig = mapConfigs[mapName];
 
-  const enemyTypesFromWaves = new Set();
-  if (mapConfig && mapConfig.waves) {
-    mapConfig.waves.forEach((wave) => {
-      if (wave.enemies) {
-        Object.keys(wave.enemies).forEach((enemyType) => {
-          enemyTypesFromWaves.add(enemyType);
-        });
-      }
-      if (wave.boss && wave.boss.spawn) {
-        enemyTypesFromWaves.add("boss");
-      }
-    });
-  }
-  const finalSprites = [
-    ...new Set([...(sprites || []), ...Array.from(enemyTypesFromWaves)]),
-  ];
+  const finalSprites = useMemo(() => {
+    const spriteSet = new Set([...sprites, "boss"]);
+    return [...spriteSet];
+  }, [sprites]);
 
   const { images: assetImages } = preloadStaticSprites(finalSprites);
+
   const animatedFramesRef = useRef({});
   useEffect(() => {
     loadAnimatedFrames(finalSprites).then((mapping) => {
@@ -104,37 +88,8 @@ const Canvas = ({
       if (bgLoadedRef.current && bgCanvasRef.current) {
         context.drawImage(bgCanvasRef.current, 0, 0);
       }
-
-      const resolvedAnimated = {};
-      finalSprites.forEach((sprite) => {
-        if (
-          enemiesData[sprite] &&
-          enemiesData[sprite].src.toLowerCase().endsWith(".gif")
-        ) {
-          if (
-            animatedFramesRef.current[sprite] &&
-            animatedFramesRef.current[sprite].length > 0
-          ) {
-            resolvedAnimated[sprite] = animatedFramesRef.current[sprite];
-          } else {
-            const fallback = new Image();
-            fallback.src = enemiesData[sprite].src;
-            resolvedAnimated[sprite] = [fallback];
-          }
-        } else if (assetImages[sprite]) {
-          resolvedAnimated[sprite] = [assetImages[sprite]];
-        } else if (enemiesData[sprite] && enemiesData[sprite].src) {
-          const fallback = new Image();
-          fallback.src = enemiesData[sprite].src;
-          resolvedAnimated[sprite] = [fallback];
-        } else {
-          console.warn(`Missing asset image for sprite "${sprite}".`);
-          resolvedAnimated[sprite] = [];
-        }
-      });
-      const animatedFramesForRenderer = { current: resolvedAnimated };
-
-      renderEnemies(
+      
+      renderEnemiesOnCanvas(
         context,
         enemiesRef.current,
         enemyPath,
@@ -143,27 +98,13 @@ const Canvas = ({
         offsetMultiplier,
         timestamp,
         assetImages,
-        animatedFramesForRenderer,
+        { current: animatedFramesRef.current },
         selectedEnemy,
         scale
       );
 
-      if (towers && towers.length > 0) {
-        towers.forEach((tower) => {
-          const towerFrames =
-            resolvedAnimated[tower.sprite] ||
-            (assetImages[tower.sprite] ? [assetImages[tower.sprite]] : []);
-          if (towerFrames.length > 0) {
-            context.drawImage(
-              towerFrames[0],
-              tower.x,
-              tower.y,
-              tower.width,
-              tower.height
-            );
-          }
-        });
-      }
+      renderTowersOnCanvas(context, towers, { current: {} }, assetImages);
+
       animationFrameId = requestAnimationFrame(render);
     };
     animationFrameId = requestAnimationFrame(render);
@@ -187,7 +128,6 @@ const Canvas = ({
       }
     };
     canvas.addEventListener("click", handleCanvasClick);
-
     return () => {
       cancelAnimationFrame(animationFrameId);
       canvas.removeEventListener("click", handleCanvasClick);
@@ -201,6 +141,7 @@ const Canvas = ({
     scale,
     towers,
     mapConfig,
+    selectedEnemy,
   ]);
 
   useEffect(() => {
@@ -211,7 +152,6 @@ const Canvas = ({
       spawnWave(setEnemies);
     }, spawnDelay);
     spawnTimeoutIdsRef.current.push(initialTimeout);
-
     return () => {
       spawnTimeoutIdsRef.current.forEach((id) => clearTimeout(id));
     };
@@ -222,7 +162,7 @@ const Canvas = ({
       ref={canvasRef}
       width={mapConfig.width}
       height={mapConfig.height}
-      style={{ border: "1px solid #000", ...style }}
+      style={style}
     >
       Your browser does not support the HTML5 canvas tag.
     </canvas>
