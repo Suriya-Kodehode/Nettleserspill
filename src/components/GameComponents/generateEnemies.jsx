@@ -8,7 +8,6 @@ export function generateEnemy(
   randomDelay,
   spriteOffset
 ) {
-  console.log("enemyConfig or similar var:", someVariable);
   const { defaultLane = 0, centerLane, offsetX = 0, offsetY = 0 } = config;
   const {
     hp: defaultHP,

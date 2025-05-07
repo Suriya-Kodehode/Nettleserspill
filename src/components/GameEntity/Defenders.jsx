@@ -1,10 +1,11 @@
 import styles from "../../CSSModules/Defenders.module.css";
+import { towerImages } from "../../assets/imageSource";
 
 export function BalloonGunner() {
   return (
     <div className={styles.GunnerPos}>
       <img
-        src="/public/images/tower/BalloonGunner.gif"
+        src={towerImages.balloonGunner}
         alt="Balloon Gunner"
         className={styles.Gunner}
       />
@@ -16,7 +17,7 @@ export function BalloonBomber() {
   return (
     <div className={styles.GunnerPos}>
       <img
-        src="/public/images/tower/Cannon.gif"
+        src={towerImages.Cannon}
         alt="BalloonCannon"
         className={styles.Bomber}
       />
