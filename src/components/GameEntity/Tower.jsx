@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styles from "../../CSSModules/Tower.module.css";
 import { BalloonGunner, BalloonBomber } from "./Defenders.jsx";
-import { generateEnemiesForMap } from "../GameComponents/generateEnemies.jsx";
-import { enemySprites } from "../GameUtility/enemySprites.jsx";
+import { generateEnemy } from "../GameComponents/generateEnemies.jsx";
+import { renderEnemies } from "../GameUtility/enemyRenderer.jsx";
 
 export default function Tower({ top, left }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,7 +10,7 @@ export default function Tower({ top, left }) {
 
   function selector() {
     checkCollision;
-    const enemies = generateEnemiesForMap("newDawn", enemySprites);
+    const enemies = generateEnemy("newDawn", renderEnemies);
     enemies.forEach((enemy) => {
       // console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
     });

@@ -1,6 +1,6 @@
 import styles from "../../CSSModules/pause.module.css";
 import { useState } from "react";
-import { iconImages } from "../assets/imageSource.jsx";
+import { iconImages } from "../../assets/imageSource.jsx";
 
 export default function Pause() {
   const [isPaused, setIsPaused] = useState(true);
