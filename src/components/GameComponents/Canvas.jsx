@@ -1,10 +1,16 @@
 import { useRef, useEffect, useState, useMemo } from "react";
-import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
+import {
+  preloadStaticSprites,
+  loadAnimatedFrames,
+} from "../GameUtility/spriteLoader.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-import { renderEnemies, getClickedEnemy } from "../GameUtility/enemyRenderer.jsx";
+import {
+  renderEnemies,
+  getClickedEnemy,
+} from "../GameUtility/enemyRenderer.jsx";
 import { enemiesData } from "../GameData/enemyData.jsx";
 
 const Canvas = ({
@@ -73,11 +79,19 @@ const Canvas = ({
     }
     gameMapRef.current.src = mapConfig.mapSrc;
     if (gameMapRef.current.complete) {
-      bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
+      bgCanvasRef.current = createBackgroundCanvas(
+        gameMapRef.current,
+        width,
+        height
+      );
       setBgLoaded(true);
     } else {
       gameMapRef.current.onload = () => {
-        bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
+        bgCanvasRef.current = createBackgroundCanvas(
+          gameMapRef.current,
+          width,
+          height
+        );
         setBgLoaded(true);
       };
       gameMapRef.current.onerror = () =>

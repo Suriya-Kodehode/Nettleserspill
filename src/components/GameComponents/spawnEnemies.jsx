@@ -4,7 +4,7 @@ export const spawnEnemies = (config) => {
   const {
     spawnDelay,
     waves,
-    enemySpawnGap = 3000, 
+    enemySpawnGap = 3000,
     maxRandomDelay = 200,
     maxSpriteSeparation = 10,
     waveInterval = 2000,
@@ -23,7 +23,7 @@ export const spawnEnemies = (config) => {
       console.log("All waves have spawned. No further enemy spawns.");
       return;
     }
-    
+
     console.log(`Spawning wave ${waveIndex + 1} of ${waves.length}`);
 
     const currentWave = waves[waveIndex];
@@ -35,12 +35,19 @@ export const spawnEnemies = (config) => {
           const randomDelay = Math.random() * maxRandomDelay;
           const precomputedDelay = spawnDelay + i * enemySpawnGap + randomDelay;
           if (precomputedDelay > maxWaveDelay) maxWaveDelay = precomputedDelay;
-          
+
           const spriteOffset =
             Math.random() * maxSpriteSeparation - maxSpriteSeparation / 2;
-          
-          const enemy = generateEnemy(spriteType, waveIndex, i, config, randomDelay, spriteOffset);
-          
+
+          const enemy = generateEnemy(
+            spriteType,
+            waveIndex,
+            i,
+            config,
+            randomDelay,
+            spriteOffset
+          );
+
           const timeoutId = setTimeout(() => {
             const actualSpawnTime = performance.now();
             setEnemies((prevEnemies) => [
@@ -59,12 +66,19 @@ export const spawnEnemies = (config) => {
         const randomDelay = Math.random() * maxRandomDelay;
         const precomputedDelay = spawnDelay + randomDelay;
         if (precomputedDelay > maxWaveDelay) maxWaveDelay = precomputedDelay;
-        
+
         const spriteOffset =
           Math.random() * maxSpriteSeparation - maxSpriteSeparation / 2;
-        
-        const enemy = generateEnemy("boss", waveIndex, i, config, randomDelay, spriteOffset);
-        
+
+        const enemy = generateEnemy(
+          "boss",
+          waveIndex,
+          i,
+          config,
+          randomDelay,
+          spriteOffset
+        );
+
         const timeoutId = setTimeout(() => {
           const actualSpawnTime = performance.now();
           setEnemies((prevEnemies) => [

@@ -1,23 +1,19 @@
 .tower {
+  background-image: url(/images/icons/BuildSign.png);
+  background-repeat: no-repeat;
+  background-size: cover;
   position: absolute;
   background-color: #00751000;
   z-index: 1;
-  width: 32px;
-  height: 16px;
-  border-radius: 50%;
-  outline-color: rgb(17, 0, 255);
-  outline-style: dotted;
-  animation-delay: 0s;
-  animation: saver 1s infinite alternate;
+  height: 40px;
 }
 
 .Tower1 {
-  /* display: none; */
   background-image: url(/images/tower/BalloonGunner.gif);
   position: absolute;
   background-repeat: no-repeat;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   top: -20px;
   left: -40px;
   background-color: black;
@@ -28,12 +24,12 @@
 }
 
 .Tower2 {
-  /* display: none; */
-  background-image: url(/images/tower/BalloonGunner.gif);
+  background-image: url(/images/tower/Cannon.gif);
+  background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   left: 50px;
   top: -21px;
   background-color: black;
@@ -45,11 +41,10 @@
 
 .Tower3 {
   background-image: url(/images/tower/BalloonGunner.gif);
-  /* display: none; */
   background-repeat: no-repeat;
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   left: 3px;
   top: -60px;
   background-color: black;
@@ -57,10 +52,4 @@
   outline-style: solid;
   outline-width: 3px;
   color: rgb(17, 0, 255);
-}
-
-@keyframes saver {
-  0% {
-    outline-offset: -6px;
-  }
 }
