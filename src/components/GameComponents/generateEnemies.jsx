@@ -1,16 +1,31 @@
 import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
 
-export function generateEnemy(spriteType, waveIndex, enemyIndex, config, randomDelay, spriteOffset) {
+export function generateEnemy(
+  spriteType,
+  waveIndex,
+  enemyIndex,
+  config,
+  randomDelay,
+  spriteOffset
+) {
   const { defaultLane = 0, centerLane, offsetX = 0, offsetY = 0 } = config;
-  const { hp: defaultHP, hitbox: defaultHitbox, damage: defaultDamage } =
-    getDefaultEnemyProperties(spriteType);
+  const {
+    hp: defaultHP,
+    hitbox: defaultHitbox,
+    damage: defaultDamage,
+  } = getDefaultEnemyProperties(spriteType);
 
-  const lane = spriteType === "boss" ? (centerLane !== undefined ? centerLane : defaultLane) : defaultLane;
+  const lane =
+    spriteType === "boss"
+      ? centerLane !== undefined
+        ? centerLane
+        : defaultLane
+      : defaultLane;
 
   const enemy = {
     id: `${spriteType}-wave${waveIndex}-${enemyIndex + 1}`,
     sprite: spriteType,
-    spawnTime: 0, 
+    spawnTime: 0,
     hp: defaultHP,
     hitbox: { ...defaultHitbox },
     damage: defaultDamage,
@@ -20,8 +35,8 @@ export function generateEnemy(spriteType, waveIndex, enemyIndex, config, randomD
   };
 
   if (spriteType === "boss") {
-    enemy.bossOffsetX = offsetX; 
-    enemy.bossOffsetY = offsetY; 
+    enemy.bossOffsetX = offsetX;
+    enemy.bossOffsetY = offsetY;
   }
 
   return enemy;

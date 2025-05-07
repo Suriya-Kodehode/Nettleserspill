@@ -1,4 +1,3 @@
-
 import { enemyKeyframesByMap } from "../GameData/pathKeyframeData.jsx";
 
 export const totalDurations = {
@@ -11,8 +10,8 @@ export const getEnemyPath = (mapName) => {
     console.error(`No keyframes defined for map ${mapName}`);
     return [];
   }
-  const totalDuration = totalDurations[mapName] || 60000; 
-  return keyframes.map(frame => ({
+  const totalDuration = totalDurations[mapName] || 60000;
+  return keyframes.map((frame) => ({
     time: (frame.percent / 100) * totalDuration,
     x: frame.x,
     y: frame.y,
