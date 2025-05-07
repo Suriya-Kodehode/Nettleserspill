@@ -117,7 +117,6 @@ export const checkPlacement = (mapName, col, row) => {
     .map(route => route.name);
   // Get names of restrictions for this cell.
   const restrictions = placementRules[mapName].restrictPositions[key] || [];
-  // Merge names uniquely.
   const allNames = [...new Set([...routesForCell, ...restrictions])];
 
   if (allNames.length === 0) {
