@@ -82,7 +82,8 @@ export const renderEnemies = (
     if (selectedEnemy && enemy === selectedEnemy) {
       let hitbox = spriteData.defaultHitbox;
       const outlineSettings = spriteData.outline || {};
-      const margin = outlineSettings.margin !== undefined ? outlineSettings.margin : 0;
+      const margin =
+        outlineSettings.margin !== undefined ? outlineSettings.margin : 0;
       hitbox = {
         x: hitbox.x,
         y: hitbox.y,
@@ -90,12 +91,20 @@ export const renderEnemies = (
         height: hitbox.height + margin,
       };
 
-      const shiftX = outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
-      const shiftY = outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
-      const outlineColor = outlineSettings.color || (enemy.sprite === "boss" ? "gold" : "red");
+      const shiftX =
+        outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
+      const shiftY =
+        outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
+      const outlineColor =
+        outlineSettings.color || (enemy.sprite === "boss" ? "gold" : "red");
       const outlineLineWidth =
-        outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : (enemy.sprite === "boss" ? 5 : 3);
-      const outlineAlpha = outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
+        outlineSettings.lineWidth !== undefined
+          ? outlineSettings.lineWidth
+          : enemy.sprite === "boss"
+          ? 5
+          : 3;
+      const outlineAlpha =
+        outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
 
       const outlineWidth = hitbox.width * scale;
       const outlineHeight = hitbox.height * scale;

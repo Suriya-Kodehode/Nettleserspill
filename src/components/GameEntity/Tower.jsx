@@ -2,18 +2,20 @@ import { useState } from "react";
 import styles from "../../CSSModules/Tower.module.css";
 import { BalloonGunner, BalloonBomber } from "./Defenders.jsx";
 // import { generateEnemy } from "../GameComponents/generateEnemies.jsx";
-// import { renderEnemies } from "../GameUtility/enemyRenderer.jsx";
+import { renderEnemies } from "../GameUtility/enemyRenderer.jsx";
+// import { getDefaultEnemyProperties } from "../GameUtility/enemyDefaults.jsx";
+// import { enemiesData } from "../GameData/enemyData.jsx";
 
 export default function Tower({ top, left }) {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTower, setActiveTower] = useState(null);
 
   function selector() {
-    checkCollision;
-    // const enemies = generateEnemy();
-    // enemies.forEach((enemy) => {
-    // console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
-    // });
+    // checkCollision;
+    const enemies = renderEnemies();
+    enemies.forEach((enemy) => {
+      console.log(`Enemy ${enemy.id} hitbox position:`, enemy.hitbox);
+    });
     setIsVisible((prevState) => !prevState);
   }
 
@@ -29,26 +31,26 @@ export default function Tower({ top, left }) {
     setActiveTower("T3");
   }
 
-  function checkCollision() {
-    const tower = document
-      .getElementsByClassName("styles.GunnerPos")
-      .getBoundingClientRect();
-    const enemy = document
-      .getElementsByTagName("enemy.id")
-      .getBoundingClientRect();
+  // function checkCollision() {
+  //   const tower = document
+  //     .getElementsByClassName("styles.GunnerPos")
+  //     .getBoundingClientRect();
+  //   const enemy = document
+  //     .getElementsByTagName("enemy.id")
+  //     .getBoundingClientRect();
 
-    const isInRadius = !(
-      enemy.right < tower.left ||
-      enemy.left > tower.right ||
-      enemy.bottom < tower.top ||
-      enemy.top > tower.bottom
-    );
+  //   const isInRadius = !(
+  //     enemy.right < tower.left ||
+  //     enemy.left > tower.right ||
+  //     enemy.bottom < tower.top ||
+  //     enemy.top > tower.bottom
+  //   );
 
-    if (isInRadius) {
-      console.log("Enemy is within tower radius! Fire!");
-      // Your function here, e.g. tower.fireAt(enemy)
-    }
-  }
+  //   if (isInRadius) {
+  //     console.log("Enemy is within tower radius! Fire!");
+  //     // Your function here, e.g. tower.fireAt(enemy)
+  //   }
+  // }
 
   return (
     <button
