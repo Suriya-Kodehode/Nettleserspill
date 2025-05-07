@@ -5,7 +5,6 @@
     "status status util"
     "map map util"
     "map map util";
-
   grid-template-columns: auto 4fr 15%;
   grid-template-rows: auto 1fr 1fr;
   overflow: hidden;
@@ -13,9 +12,40 @@
 
 .statusContainer {
   grid-area: status;
+  min-height: 4rem;
+  display: flex;
+  padding-left: 8rem;
+  color: #fff;
+  align-items: center;
+  gap: 2rem; 
 }
+
 .playerStatus {
   width: fit-content;
+}
+
+.enemyDetails {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: inherit;
+  border-radius: 4px;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.enemyDetails > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.enemyDetails h3,
+.enemyDetails p {
+  margin: 0;
+  padding: 0;
 }
 
 .mapContainer {
@@ -29,10 +59,9 @@
 
 .utilityContainer {
   grid-area: util;
-
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   width: 100%;
   height: auto;

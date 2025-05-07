@@ -37,6 +37,6 @@
 
 /* Background for /game page */
 .gameBG {
-    background: #242424;
+    background: var(--darkmode-background);
     background-size: cover;
 }
