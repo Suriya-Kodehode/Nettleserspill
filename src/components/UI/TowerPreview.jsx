@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const TowerPreview = ({
@@ -9,7 +8,7 @@ const TowerPreview = ({
   style,
 }) => {
   if (!previewPos || !selectedTower) return null;
-
+  
   const { cols = 2, rows = 2 } = selectedTower.gridHighlight || {};
 
   const width = gridCellSize * cols;
@@ -47,8 +46,8 @@ const TowerPreview = ({
                 height: gridCellSize,
                 boxSizing: "border-box",
                 backgroundColor: isRestricted
-                  ? "rgba(255, 165, 0, 0.5)" // Orange for disallowed cells
-                  : "rgba(0, 128, 0, 0.3)",   // Green for allowed cells
+                  ? "rgba(255, 165, 0, 0.5)" // orange for disallowed
+                  : "rgba(0, 128, 0, 0.3)",   // green for allowed
                 border: `1px solid ${isRestricted ? "orange" : "lime"}`,
               }}
             ></div>
@@ -56,7 +55,7 @@ const TowerPreview = ({
         })
       )}
       <img
-        src={selectedTower.image}
+        src={selectedTower.src}
         alt={selectedTower.name}
         style={{
           position: "absolute",
@@ -64,7 +63,7 @@ const TowerPreview = ({
           left: 0,
           width: "100%",
           height: "100%",
-          opacity: 1,
+          opacity: 1, 
           pointerEvents: "none",
           zIndex: 1,
         }}

@@ -10,8 +10,7 @@ const towerT1 = {
   range: 150,
   damage: 10,
   fireRate: 1.0,
-  image: towerImages.balloonGunner,
-  sprite: "balloonGunner",
+  src: towerImages.balloonGunner,
   gridHighlight: { cols: 2, rows: 2 },
 };
 
@@ -24,8 +23,7 @@ const towerT2 = {
   range: 130,
   damage: 20,
   fireRate: 0.8,
-  image: towerImages.Cannon,
-  sprite: "balloonBomber",
+  src: towerImages.Cannon,
   gridHighlight: { cols: 2, rows: 2 },
 };
 
@@ -38,8 +36,7 @@ const towerT1u = {
   range: 170,
   damage: 15,
   fireRate: 1.2,
-  image: towerImages.balloonGunner, // placeholder for upgraded image
-  sprite: "balloonGunner",
+  src: towerImages.balloonGunner, // placeholder for upgraded image
   gridHighlight: { cols: 2, rows: 2 },
 };
 

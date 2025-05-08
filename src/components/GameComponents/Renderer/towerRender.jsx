@@ -12,23 +12,26 @@ export const renderTowersOnCanvas = (
     let towerImage = null;
 
     if (
-      tower.sprite &&
-      resolvedAnimated[tower.sprite] &&
-      resolvedAnimated[tower.sprite].length > 0
+      resolvedAnimated[tower.src] &&
+      resolvedAnimated[tower.src].length > 0
     ) {
-      const frames = resolvedAnimated[tower.sprite];
-      console.log(`Rendering tower ${tower.id} with sprite "${tower.sprite}" - ${frames.length} frames available`);
-      const frameIndex = Math.floor(timestamp / 100) % frames.length;
+      const frames = resolvedAnimated[tower.src];
+      const frameDelay = frames.frameDelay || 100;
+      const frameIndex = Math.floor(timestamp / frameDelay) % frames.length;
+      console.log(
+        `Rendering tower ${tower.id} with animated frames for "${tower.src}" - ${frames.length} frames available`
+      );
       towerImage = frames[frameIndex];
-    } else if (tower.sprite && assetImages[tower.sprite]) {
-      towerImage = assetImages[tower.sprite];
-    } else {
-      towerImage = tower.image;
+    }
+    else if (assetImages && assetImages[tower.src]) {
+      towerImage = assetImages[tower.src];
+    }
+    else {
+      towerImage = tower.src;
       if (typeof towerImage === "string") {
         const img = new Image();
         img.src = towerImage;
         towerImage = img;
-        tower.image = img;
       }
     }
 

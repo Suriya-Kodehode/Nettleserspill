@@ -19,7 +19,7 @@ const TowerSelection = React.forwardRef(({ selectedTower, onTowerSelect }, ref) 
           onClick={() => onTowerSelect(tower)}
         >
           <StaticImage
-            src={tower.image}
+            src={tower.src}
             alt={tower.name}
             className={styles.towerImage}
             freeze={true}

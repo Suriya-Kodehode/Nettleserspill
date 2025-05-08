@@ -25,7 +25,7 @@ export const backgroundImages = {
 
 export const enemyImages = {
   monkey: path("enemy", "MonkeyAni.gif"),
-  boss: path("enemy", "Boss.png"),
+  boss: path("enemy", "BossMan.gif"),
   cat: path("enemy", "cat.gif"),
 };
 

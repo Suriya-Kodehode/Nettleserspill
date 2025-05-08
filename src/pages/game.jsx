@@ -31,7 +31,7 @@ function Game() {
   const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
-  const [selectedTower, setSelectedTower] = useState(null);
+  const [selectedTower, setSelectedTower] = useState(null); 
   const [activeTower, setActiveTower] = useState(null); 
   const [placedTowers, setPlacedTowers] = useState([]);
   const [relocatingTower, setRelocatingTower] = useState(null);
@@ -44,32 +44,37 @@ function Game() {
   const restrictedCellsArray = getRestrictedCells(mapName, placementRules, routes);
   const towerSelectionRef = useRef(null);
 
+  const getClickedTower = (x, y) => {
+    for (let i = placedTowers.length - 1; i >= 0; i--) {
+      const tower = placedTowers[i];
+      const cols = tower.gridHighlight?.cols || 2;
+      const rows = tower.gridHighlight?.rows || 2;
+      const towerWidth = gridCellSize * cols;
+      const towerHeight = gridCellSize * rows;
+      if (
+        x >= tower.left &&
+        x <= tower.left + towerWidth &&
+        y >= tower.top &&
+        y <= tower.top + towerHeight
+      ) {
+        return tower;
+      }
+    }
+    return null;
+  };
+
   const defaultMouseMoveHandler = (e) => {
-    e.currentTarget.style.cursor = "default";
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const towerUnderMouse = getClickedTower(mouseX, mouseY);
+    e.currentTarget.style.cursor = towerUnderMouse ? "pointer" : "default";
   };
 
   const defaultClickHandler = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
-    const getClickedTower = (x, y) => {
-      for (let i = placedTowers.length - 1; i >= 0; i--) {
-        const tower = placedTowers[i];
-        const cols = tower.gridHighlight?.cols || 2;
-        const rows = tower.gridHighlight?.rows || 2;
-        const towerWidth = gridCellSize * cols;
-        const towerHeight = gridCellSize * rows;
-        if (
-          x >= tower.left &&
-          x <= tower.left + towerWidth &&
-          y >= tower.top &&
-          y <= tower.top + towerHeight
-        ) {
-          return tower;
-        }
-      }
-      return null;
-    };
     const tower = getClickedTower(clickX, clickY);
     if (tower) {
       setActiveTower(tower);
@@ -114,12 +119,14 @@ function Game() {
     alert(`Upgrading tower ${activeTower.name}!`);
     setActiveTower(null);
   };
-
   useEffect(() => {
     const handleDocumentClick = (e) => {
       if (
-        (towerSelectionRef.current && towerSelectionRef.current.contains(e.target)) ||
-        (e.target && e.target.classList && e.target.classList.contains("interactive-grid"))
+        (towerSelectionRef.current &&
+          towerSelectionRef.current.contains(e.target)) ||
+        (e.target &&
+          e.target.classList &&
+          e.target.classList.contains("interactive-grid"))
       ) {
         return;
       }
