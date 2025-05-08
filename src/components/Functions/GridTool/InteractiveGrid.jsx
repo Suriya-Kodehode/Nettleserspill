@@ -1,7 +1,13 @@
-
 import { useRef, useEffect } from "react";
 
-const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGrid }) => {
+const InteractiveGrid = ({
+  width,
+  height,
+  gridCellSize = 16,
+  onCellClick,
+  showGrid,
+  style = {}
+}) => {
   const canvasRef = useRef(null);
   const coordinateCellSize = gridCellSize;
 
@@ -9,27 +15,24 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
-
-    // Clear the canvas on every redraw.
     context.clearRect(0, 0, width, height);
 
-    // Only draw grid lines if showGrid is enabled.
-    if (!showGrid) return;
-
-    context.save();
-    context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-    context.lineWidth = 1;
-    context.beginPath();
-    for (let x = 0; x <= width; x += gridCellSize) {
-      context.moveTo(x, 0);
-      context.lineTo(x, height);
+    if (showGrid) {
+      context.save();
+      context.strokeStyle = "rgba(0, 0, 0, 0.5)";
+      context.lineWidth = 1;
+      context.beginPath();
+      for (let x = 0; x <= width; x += gridCellSize) {
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
+      }
+      for (let y = 0; y <= height; y += gridCellSize) {
+        context.moveTo(0, y);
+        context.lineTo(width, y);
+      }
+      context.stroke();
+      context.restore();
     }
-    for (let y = 0; y <= height; y += gridCellSize) {
-      context.moveTo(0, y);
-      context.lineTo(width, y);
-    }
-    context.stroke();
-    context.restore();
   };
 
   useEffect(() => {
@@ -44,8 +47,7 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
     const y = event.clientY - rect.top;
     const col = Math.floor(x / coordinateCellSize);
     const row = Math.floor(y / coordinateCellSize);
-    console.log(`Clicked coordinate: (${col}, ${row})`);
-    onCellClick && onCellClick({ col, row });
+    onCellClick && onCellClick({ col, row, event });
   };
 
   return (
@@ -53,12 +55,14 @@ const InteractiveGrid = ({ width, height, gridCellSize = 16, onCellClick, showGr
       ref={canvasRef}
       width={width}
       height={height}
+      className="interactive-grid"
       style={{
         position: "absolute",
         top: 0,
         left: 0,
-        pointerEvents: showGrid ? "auto" : "none",
+        pointerEvents: "auto",
         zIndex: 1000,
+        ...style,
       }}
       onClick={handleClick}
     >

@@ -1,4 +1,4 @@
-/* Existing styles... */
+
 .gameContainer {
   width: 100vw;
   height: 100vh;
@@ -63,17 +63,16 @@
   align-items: center;
   width: 100%;
   height: auto;
-  /* padding: 0 2rem; */
 }
 
-/* New styles for TowerSelection UI */
 .towerSelection {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 0.5rem;
   margin-top: 1rem;
   width: 100%;
-  padding: 0 1rem;
+  margin: 0 auto;
+  padding: 1rem 0;
 }
 
 .towerSelectionButton {

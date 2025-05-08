@@ -1,4 +1,3 @@
-
 import React from "react";
 import { towerData } from "../GameData/towerData.jsx";
 import StaticImage from "../Functions/StaticImage.jsx"; 
@@ -23,6 +22,7 @@ const TowerSelection = React.forwardRef(({ selectedTower, onTowerSelect }, ref) 
             src={tower.image}
             alt={tower.name}
             className={styles.towerImage}
+            freeze={true}
           />
           <div className={styles.towerName}>{tower.name}</div>
         </button>

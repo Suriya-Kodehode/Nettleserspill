@@ -1,26 +1,33 @@
+
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { enemiesData } from "../GameData/enemyData.jsx";
 
-export const preloadStaticSprites = (sprites) => {
+export const preloadStaticSprites = async (sprites) => {
   const images = {};
   const loadStatus = {};
-  sprites.forEach((sprite) => {
+
+  const promises = sprites.map((sprite) => {
     const spriteData = enemiesData[sprite];
-    if (!spriteData) return;
-    if (spriteData.src.toLowerCase().endsWith(".gif")) return;
-    const img = new Image();
-    img.src = spriteData.src;
-    images[sprite] = img;
-    img.onload = () => {
-      loadStatus[sprite] = true;
-    };
-    img.onerror = () => {
-      console.error(`Failed to load static sprite image for ${sprite}`);
-    };
+    if (!spriteData) return Promise.resolve();
+    if (spriteData.src.toLowerCase().endsWith(".gif")) return Promise.resolve();
+
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = spriteData.src;
+      img.onload = () => {
+        images[sprite] = img;
+        loadStatus[sprite] = true;
+        resolve();
+      };
+      img.onerror = () => {
+        console.error(`Failed to load static sprite image for ${sprite}`);
+        resolve();
+      };
+    });
   });
+  await Promise.all(promises);
   return { images, loadStatus };
 };
-
 export const loadAnimatedFrames = async (sprites) => {
   const animatedMapping = {};
   await Promise.all(
@@ -56,9 +63,6 @@ export const loadAnimatedFrames = async (sprites) => {
             return canvas;
           });
           offscreenFrames.frameDelay = computedDelay;
-          // console.log(
-          //   `Loaded animated frames for ${sprite}: ${offscreenFrames.length} frames, delay: ${computedDelay} ms`
-          // );
           animatedMapping[sprite] = offscreenFrames;
         } catch (err) {
           console.error(`Error loading animated frames for ${sprite}:`, err);

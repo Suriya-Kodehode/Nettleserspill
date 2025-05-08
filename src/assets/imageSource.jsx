@@ -33,6 +33,8 @@ export const iconImages = {
   heart: path("icons", "mdi_heart.svg"),
   playButton: path("icons", "play button.svg"),
   redBalloon: path("icons", "Red balloon.svg"),
+  moveIcon: path("icons", "moveIcon.svg"),
+  upgradeIcon: path("icons", "upgradeIcon.svg"),
 };
 
 export const mapImages = {

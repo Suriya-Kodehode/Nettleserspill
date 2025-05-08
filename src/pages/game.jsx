@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import Canvas from "../components/GameComponents/Canvas.jsx";
 import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
@@ -6,19 +5,26 @@ import ToggleGrid from "../components/UI/ToggleGrid.jsx";
 import InteractiveGrid from "../components/Functions/GridTool/InteractiveGrid.jsx";
 import DisallowedOverlay from "../components/Functions/GridTool/DisallowedOverlay.jsx";
 import DisallowedButton from "../components/UI/DisallowedButton.jsx";
-import styles from "../CSSModules/game.module.css";
+import TowerSelection from "../components/UI/TowerSelection.jsx";
+import TowerPreview from "../components/UI/TowerPreview.jsx";
+import TowerRangeOverlay from "../components/UI/TowerRangeOverlay.jsx";
+import TowerOptions from "../components/UI/TowerOptions.jsx";
 import Pause from "../components/UI/Pause.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
+import { enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
+import { getRestrictedCells } from "../components/GameUtility/restrictions.jsx";
+import { usePreview } from "../components/GameUtility/hooks/usePreview.jsx";
 import {
-  enemyRoutes,
-  placementRules,
-  checkPlacement,
-} from "../components/Functions/placementRules.jsx";
-import TowerSelection from "../components/UI/TowerSelection.jsx";
+  createHandleCellClick,
+  createMapMouseMoveHandler,
+  createMapClickHandler,
+  handleRelocateOption,
+} from "../components/GameUtility/towerInteractionHandlers.jsx";
+import styles from "../CSSModules/game.module.css";
 
 function Game() {
   const mapName = "newDawn";
-  const enemySprites = ["monkey"];
+  const sprites = ["monkey", "balloonGunner", "balloonBomber"];
   const routes = enemyRoutes[mapName] || [];
 
   const [showGrid, setShowGrid] = useState(false);
@@ -26,52 +32,109 @@ function Game() {
   const [gridCellSize, setGridCellSize] = useState(16);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
   const [selectedTower, setSelectedTower] = useState(null);
+  const [activeTower, setActiveTower] = useState(null); 
   const [placedTowers, setPlacedTowers] = useState([]);
+  const [relocatingTower, setRelocatingTower] = useState(null);
+  const [relocatePos, setRelocatePos] = useState(null);
+
+  const [previewPos, updatePreview, clearPreview, setPreviewPos] =
+    usePreview(selectedTower, gridCellSize);
 
   const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
-
-  let allRestricted = new Set();
-  if (placementRules[mapName]) {
-    Object.keys(placementRules[mapName].restrictPositions).forEach((key) => {
-      allRestricted.add(key);
-    });
-  }
-  routes.forEach((route) => {
-    Object.keys(route.cells).forEach((key) => allRestricted.add(key));
-  });
-  const restrictedCellsArray = Array.from(allRestricted);
-
+  const restrictedCellsArray = getRestrictedCells(mapName, placementRules, routes);
   const towerSelectionRef = useRef(null);
 
-  const handleCellClick = ({ col, row }) => {
-    if (selectedTower) {
-      const cellKey = `${col}-${row}`;
-      if (restrictedCellsArray.includes(cellKey)) {
-        console.log("This cell is restricted. Cannot place tower here.");
-        return;
+  const defaultMouseMoveHandler = (e) => {
+    e.currentTarget.style.cursor = "default";
+  };
+
+  const defaultClickHandler = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    const getClickedTower = (x, y) => {
+      for (let i = placedTowers.length - 1; i >= 0; i--) {
+        const tower = placedTowers[i];
+        const cols = tower.gridHighlight?.cols || 2;
+        const rows = tower.gridHighlight?.rows || 2;
+        const towerWidth = gridCellSize * cols;
+        const towerHeight = gridCellSize * rows;
+        if (
+          x >= tower.left &&
+          x <= tower.left + towerWidth &&
+          y >= tower.top &&
+          y <= tower.top + towerHeight
+        ) {
+          return tower;
+        }
       }
-      const left = col * gridCellSize;
-      const top = row * gridCellSize;
-      const newTower = { ...selectedTower, top, left };
-      setPlacedTowers((prev) => [...prev, newTower]);
-      setSelectedTower(null);
+      return null;
+    };
+    const tower = getClickedTower(clickX, clickY);
+    if (tower) {
+      setActiveTower(tower);
     } else {
-      checkPlacement(mapName, col, row);
+      setActiveTower(null);
     }
+  };
+
+  const handleCellClick = createHandleCellClick(
+    selectedTower,
+    previewPos,
+    gridCellSize,
+    restrictedCellsArray,
+    setPlacedTowers,
+    setSelectedTower,
+    setPreviewPos
+  );
+
+  const mapMouseMoveHandler = createMapMouseMoveHandler(
+    relocatingTower,
+    gridCellSize,
+    setRelocatePos,
+    defaultMouseMoveHandler
+  );
+
+  const mapClickHandler = createMapClickHandler(
+    relocatingTower,
+    gridCellSize,
+    setPlacedTowers,
+    setRelocatingTower,
+    setRelocatePos,
+    restrictedCellsArray,
+    defaultClickHandler
+  );
+
+  const onRelocateOption = () => {
+    handleRelocateOption(activeTower, setPlacedTowers, setActiveTower, setRelocatingTower);
+  };
+
+  const handleUpgrade = () => {
+    if (!activeTower) return;
+    alert(`Upgrading tower ${activeTower.name}!`);
+    setActiveTower(null);
   };
 
   useEffect(() => {
     const handleDocumentClick = (e) => {
       if (
-        towerSelectionRef.current &&
-        !towerSelectionRef.current.contains(e.target)
+        (towerSelectionRef.current && towerSelectionRef.current.contains(e.target)) ||
+        (e.target && e.target.classList && e.target.classList.contains("interactive-grid"))
       ) {
-        setSelectedTower(null);
+        return;
       }
+      setSelectedTower(null);
+      setActiveTower(null);
+      setRelocatingTower(null);
     };
     document.addEventListener("mousedown", handleDocumentClick);
-    return () => document.removeEventListener("mousedown", handleDocumentClick);
+    return () =>
+      document.removeEventListener("mousedown", handleDocumentClick);
   }, []);
+
+  useEffect(() => {
+    console.log("Placed Towers:", placedTowers);
+  }, [placedTowers]);
 
   return (
     <>
@@ -123,13 +186,31 @@ function Game() {
               width: canvasWidth,
               height: canvasHeight,
             }}
+            onMouseMove={(e) => {
+              if (selectedTower) {
+                updatePreview(e);
+              } else {
+                mapMouseMoveHandler(e);
+              }
+            }}
+            onMouseLeave={() => {
+              clearPreview();
+              document.body.style.cursor = "default";
+            }}
+            onClick={mapClickHandler}
           >
             <Canvas
               mapName={mapName}
-              sprites={enemySprites}
+              sprites={sprites}
               towers={placedTowers}
               onEnemyClick={setSelectedEnemy}
+              onTowerClick={(tower) => {
+                console.log("Placed tower clicked via Canvas:", tower);
+                setActiveTower(tower);
+              }}
               selectedEnemy={selectedEnemy}
+              gridCellSize={gridCellSize}
+              disableCanvasClick={selectedTower ? true : false}
             />
             <InteractiveGrid
               showGrid={showGrid}
@@ -137,12 +218,45 @@ function Game() {
               height={canvasHeight}
               gridCellSize={gridCellSize}
               onCellClick={handleCellClick}
+              style={{ pointerEvents: selectedTower ? "auto" : "none" }}
             />
             {showDisallowed && (
               <DisallowedOverlay
                 restrictedCells={restrictedCellsArray}
                 gridCellSize={gridCellSize}
               />
+            )}
+            {selectedTower && previewPos && (
+              <TowerPreview
+                previewPos={previewPos}
+                gridCellSize={gridCellSize}
+                selectedTower={selectedTower}
+                restrictedCellsArray={restrictedCellsArray}
+              />
+            )}
+            {relocatingTower && relocatePos && (
+              <TowerPreview
+                previewPos={relocatePos}
+                gridCellSize={gridCellSize}
+                selectedTower={relocatingTower}
+                restrictedCellsArray={restrictedCellsArray}
+              />
+            )}
+            {activeTower && !relocatingTower && (
+              <>
+                <TowerRangeOverlay
+                  activeTower={activeTower}
+                  gridCellSize={gridCellSize}
+                />
+                <TowerOptions
+                  activeTower={activeTower}
+                  gridCellSize={gridCellSize}
+                  onRelocate={onRelocateOption}
+                  onUpgrade={handleUpgrade}
+                  moveIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(90deg)"
+                  upgradeIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(270deg)"
+                />
+              </>
             )}
           </div>
         </div>

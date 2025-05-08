@@ -1,28 +1,34 @@
-
 import React, { useState, useEffect } from "react";
 
-const StaticImage = ({ src, alt, className }) => {
+const StaticImage = ({ src, alt, className, freeze = false }) => {
   const [staticSrc, setStaticSrc] = useState(src);
 
   useEffect(() => {
-    if (src && src.toLowerCase().endsWith(".gif")) {
+    let didCancel = false;
+    if (freeze && src && src.toLowerCase().endsWith(".gif")) {
       const img = new Image();
       img.src = src;
       img.crossOrigin = "Anonymous";
       img.onload = () => {
+        if (didCancel) return;
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         const dataURL = canvas.toDataURL();
-        setStaticSrc(dataURL);
+        if (!didCancel) setStaticSrc(dataURL);
       };
-      img.onerror = () => setStaticSrc(src);
+      img.onerror = () => {
+        if (!didCancel) setStaticSrc(src);
+      };
     } else {
       setStaticSrc(src);
     }
-  }, [src]);
+    return () => {
+      didCancel = true;
+    };
+  }, [src, freeze]);
 
   return <img src={staticSrc} alt={alt || "Static image"} className={className} />;
 };

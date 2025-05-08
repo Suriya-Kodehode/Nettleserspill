@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
@@ -15,7 +14,10 @@ const Canvas = ({
   style = {},
   offsetMultiplier = 3,
   onEnemyClick,
+  onTowerClick,
   selectedEnemy,
+  gridCellSize = 16,
+  disableCanvasClick = true,
 }) => {
   const canvasRef = useRef(null);
   const gameMapRef = useRef(null);
@@ -24,6 +26,7 @@ const Canvas = ({
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
   const [bgLoaded, setBgLoaded] = useState(false);
+  const [assetImages, setAssetImages] = useState({});
   const mapConfig = mapConfigs[mapName];
 
   const finalSprites = useMemo(() => {
@@ -31,7 +34,12 @@ const Canvas = ({
     return [...spriteSet];
   }, [sprites]);
 
-  const { images: assetImages } = preloadStaticSprites(finalSprites);
+  useEffect(() => {
+    (async () => {
+      const { images } = await preloadStaticSprites(finalSprites);
+      setAssetImages(images);
+    })();
+  }, [finalSprites]);
 
   const animatedFramesRef = useRef({});
   useEffect(() => {
@@ -52,6 +60,25 @@ const Canvas = ({
   const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
   const scale = 0.8;
 
+  const getClickedTower = (x, y) => {
+    for (let i = towers.length - 1; i >= 0; i--) {
+      const tower = towers[i];
+      const cols = tower.gridHighlight?.cols || 2;
+      const rows = tower.gridHighlight?.rows || 2;
+      const towerWidth = gridCellSize * cols;
+      const towerHeight = gridCellSize * rows;
+      if (
+        x >= tower.left &&
+        x <= tower.left + towerWidth &&
+        y >= tower.top &&
+        y <= tower.top + towerHeight
+      ) {
+        return tower;
+      }
+    }
+    return null;
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -63,19 +90,11 @@ const Canvas = ({
     }
     gameMapRef.current.src = mapConfig.mapSrc;
     if (gameMapRef.current.complete) {
-      bgCanvasRef.current = createBackgroundCanvas(
-        gameMapRef.current,
-        width,
-        height
-      );
+      bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
       setBgLoaded(true);
     } else {
       gameMapRef.current.onload = () => {
-        bgCanvasRef.current = createBackgroundCanvas(
-          gameMapRef.current,
-          width,
-          height
-        );
+        bgCanvasRef.current = createBackgroundCanvas(gameMapRef.current, width, height);
         setBgLoaded(true);
       };
       gameMapRef.current.onerror = () =>
@@ -103,16 +122,32 @@ const Canvas = ({
         scale
       );
 
-      renderTowersOnCanvas(context, towers, { current: {} }, assetImages);
+      renderTowersOnCanvas(
+        context,
+        towers,
+        { current: animatedFramesRef.current },
+        assetImages,
+        gridCellSize,
+        timestamp
+      );
 
       animationFrameId = requestAnimationFrame(render);
     };
     animationFrameId = requestAnimationFrame(render);
 
     const handleCanvasClick = (event) => {
+      if (disableCanvasClick) {
+        event.stopPropagation();
+        return;
+      }
       const rect = canvas.getBoundingClientRect();
       const clickX = event.clientX - rect.left;
       const clickY = event.clientY - rect.top;
+      const clickedTower = getClickedTower(clickX, clickY);
+      if (clickedTower && onTowerClick) {
+        onTowerClick(clickedTower);
+        return;
+      }
       const clickedEnemy = getClickedEnemy(
         clickX,
         clickY,
@@ -123,9 +158,7 @@ const Canvas = ({
         offsetMultiplier,
         scale
       );
-      if (onEnemyClick) {
-        onEnemyClick(clickedEnemy || null);
-      }
+      onEnemyClick && onEnemyClick(clickedEnemy || null);
     };
     canvas.addEventListener("click", handleCanvasClick);
     return () => {
@@ -134,7 +167,6 @@ const Canvas = ({
     };
   }, [
     finalSprites,
-    assetImages,
     enemyPath,
     offsetMultiplier,
     onEnemyClick,
@@ -142,6 +174,10 @@ const Canvas = ({
     towers,
     mapConfig,
     selectedEnemy,
+    gridCellSize,
+    assetImages,
+    disableCanvasClick,
+    onTowerClick,
   ]);
 
   useEffect(() => {

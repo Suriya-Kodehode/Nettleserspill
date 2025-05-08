@@ -1,4 +1,3 @@
-
 import { BalloonGunner, BalloonBomber } from "../GameEntity/Defenders.jsx";
 import { towerImages } from "../../assets/imageSource.jsx";
 
@@ -12,6 +11,8 @@ const towerT1 = {
   damage: 10,
   fireRate: 1.0,
   image: towerImages.balloonGunner,
+  sprite: "balloonGunner",
+  gridHighlight: { cols: 2, rows: 2 },
 };
 
 const towerT2 = {
@@ -24,6 +25,8 @@ const towerT2 = {
   damage: 20,
   fireRate: 0.8,
   image: towerImages.Cannon,
+  sprite: "balloonBomber",
+  gridHighlight: { cols: 2, rows: 2 },
 };
 
 const towerT1u = {
@@ -31,11 +34,13 @@ const towerT1u = {
   id: "T1u",
   name: "Upgraded Balloon Gunner",
   description: "An upgraded version of the Balloon Gunner with improved stats.",
-  cost: 150,     
-  range: 170,    
-  damage: 15,    
+  cost: 150,
+  range: 170,
+  damage: 15,
   fireRate: 1.2,
   image: towerImages.balloonGunner, // placeholder for upgraded image
+  sprite: "balloonGunner",
+  gridHighlight: { cols: 2, rows: 2 },
 };
 
 export const towerData = {
