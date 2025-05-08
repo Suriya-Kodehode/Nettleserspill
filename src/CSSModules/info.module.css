@@ -10,7 +10,7 @@
 .container {
     padding: 20px;
     font-family: 'YangBagus', sans-serif; /* Standard font for resten av siden */
-    background-color: #43720d; /* Lys bakgrunnsfarge */
+    background-color: #74b826; /* Lys bakgrunnsfarge */
 }
 
 /* Tittel-stil */
@@ -35,10 +35,10 @@ h1 {
     display: flex;
     align-items: center;
     gap: 20px;
-    border: 1px solid #000000;
+    border: 1px solid #267a10;
     padding: 15px;
     border-radius: 8px;
-    background-color: #302727; /* Hvit bakgrunn for hvert element */
+    background-color: #283838; /* Hvit bakgrunn for hvert element */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lett skygge */
 }
 
@@ -64,15 +64,15 @@ h1 {
     font-family: 'YangBagus', sans-serif; /* Bruker Yabangus-fonten */
     font-size: 24px;
     color: #9210c5;
-    
+    margin-right: 100px;
 }
 
 /* Beskrivelse og detaljer */
 .info p {
     margin: 5px 0;
     font-size: 16px;
-    color: #666;
-    
+    color: #d3b7b7;
+    margin-right: 100px;
 }
 
 /* Tilbake-lenke */
@@ -89,4 +89,5 @@ h1 {
 .backLink:hover {
     text-decoration: underline;
     color: #9210c5;
+    position: center;
 }
