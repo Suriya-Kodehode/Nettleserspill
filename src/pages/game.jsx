@@ -15,15 +15,12 @@ import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 import { enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
 import { getRestrictedCells } from "../components/GameUtility/restrictions.jsx";
 import { usePreview } from "../components/GameUtility/hooks/usePreview.jsx";
-import {
-  createHandleCellClick,
-  createMapMouseMoveHandler,
-  createMapClickHandler,
-  handleRelocateOption,
-  handleUpgrade,
-} from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
-import { createDefaultMouseMoveHandler, createDefaultClickHandler } from "../components/GameUtility/Handlers/defaultHandlers.jsx";
-import { createDocumentClickHandler, handleRestart as generalHandleRestart } from "../components/GameUtility/Handlers/generalHandlers.jsx";
+import { createHandleCellClick, createMapMouseMoveHandler, createMapClickHandler,handleRelocateOption, handleUpgrade, } from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
+import { createDefaultMouseMoveHandler, createDefaultClickHandler, } from "../components/GameUtility/Handlers/defaultHandlers.jsx";
+import { handleRestart as generalHandleRestart } from "../components/GameUtility/Handlers/generalHandlers.jsx";
+import useDocumentClickHandler from "../components/GameUtility/hooks/useDocumentClickHandler.jsx";
+import useGameOverListener from "../components/GameUtility/hooks/useGameOverListener.jsx";
+import useLogPlacedTowers from "../components/GameUtility/hooks/useLogPlacedTowers.jsx";
 import styles from "../CSSModules/game.module.css";
 
 function Game() {
@@ -85,30 +82,16 @@ function Game() {
     handleRelocateOption(activeTower, setPlacedTowers, setActiveTower, setRelocatingTower);
   };
 
-  useEffect(() => {
-    const docClickHandler = createDocumentClickHandler(
-      towerSelectionRef,
-      setSelectedTower,
-      setActiveTower,
-      setRelocatingTower
-    );
-    document.addEventListener("mousedown", docClickHandler);
-    return () => document.removeEventListener("mousedown", docClickHandler);
-  }, []);
+  useDocumentClickHandler(
+    towerSelectionRef,
+    setSelectedTower,
+    setActiveTower,
+    setRelocatingTower
+  );
 
-  useEffect(() => {
-    console.log("Placed Towers:", placedTowers);
-  }, [placedTowers]);
+  useLogPlacedTowers(placedTowers);
 
-  useEffect(() => {
-    const handleGameOver = (e) => {
-      if (e.detail.gameOver) {
-        setGameOver(true);
-      }
-    };
-    window.addEventListener("gameOver", handleGameOver);
-    return () => window.removeEventListener("gameOver", handleGameOver);
-  }, []);
+  useGameOverListener(setGameOver);
 
   const restartHandler = () => {
     generalHandleRestart({
