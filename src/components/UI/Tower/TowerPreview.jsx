@@ -6,27 +6,34 @@ const TowerPreview = ({
   selectedTower,
   restrictedCellsArray,
   style,
+  isRelocating = false,
 }) => {
   if (!previewPos || !selectedTower) return null;
   
   const { cols = 2, rows = 2 } = selectedTower.gridHighlight || {};
-
   const width = gridCellSize * cols;
   const height = gridCellSize * rows;
+  
+  const containerStyle = {
+    position: "absolute",
+    top: previewPos.top,
+    left: previewPos.left,
+    width,
+    height,
+    pointerEvents: "none",
+    transform: "translate(-50%, -50%)",
+    ...style,
+  };
+
+  if (isRelocating) {
+    containerStyle.border = "2px dashed red";
+    containerStyle.opacity = 0.85;
+  } else {
+    containerStyle.opacity = 1;
+  }
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: previewPos.top,
-        left: previewPos.left,
-        width,
-        height,
-        pointerEvents: "none",
-        transform: "translate(-50%, -50%)", 
-        ...style,
-      }}
-    >
+    <div style={containerStyle}>
       {Array.from({ length: rows }).map((_, r) =>
         Array.from({ length: cols }).map((_, c) => {
           const previewCol = previewPos.col || 0;
@@ -63,7 +70,7 @@ const TowerPreview = ({
           left: 0,
           width: "100%",
           height: "100%",
-          opacity: 1, 
+          opacity: 1,
           pointerEvents: "none",
           zIndex: 1,
         }}

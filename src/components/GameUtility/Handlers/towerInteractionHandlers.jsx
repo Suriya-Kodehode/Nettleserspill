@@ -105,9 +105,7 @@ export const createMapClickHandler = (
         if (!canPlace) break;
       }
       if (!canPlace) {
-        console.log(
-          "Cannot relocate tower here because part of the area is restricted."
-        );
+        console.log("Cannot relocate tower here because part of the area is restricted.");
         return;
       }
       const updatedTower = {
@@ -126,6 +124,7 @@ export const createMapClickHandler = (
   };
 };
 
+
 export const handleRelocateOption = (
   activeTower,
   setPlacedTowers,
@@ -137,6 +136,7 @@ export const handleRelocateOption = (
   setRelocatingTower(activeTower);
   setActiveTower(null);
 };
+
 
 export const getClickedTower = (x, y, towers, gridCellSize) => {
   for (let i = towers.length - 1; i >= 0; i--) {
