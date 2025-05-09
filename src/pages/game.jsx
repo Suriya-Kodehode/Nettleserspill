@@ -10,6 +10,7 @@ import TowerPreview from "../components/UI/Tower/TowerPreview.jsx";
 import TowerRangeOverlay from "../components/UI/Tower/TowerRangeOverlay.jsx";
 import TowerOptions from "../components/UI/Tower/TowerOptions.jsx";
 import Pause from "../components/UI/Pause.jsx";
+import GameOverScreen from "../components/UI/GameOverScreen.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 import { enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
 import { getRestrictedCells } from "../components/GameUtility/restrictions.jsx";
@@ -19,7 +20,10 @@ import {
   createMapMouseMoveHandler,
   createMapClickHandler,
   handleRelocateOption,
-} from "../components/GameUtility/towerInteractionHandlers.jsx";
+  handleUpgrade,
+} from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
+import { createDefaultMouseMoveHandler, createDefaultClickHandler } from "../components/GameUtility/Handlers/defaultHandlers.jsx";
+import { createDocumentClickHandler, handleRestart as generalHandleRestart } from "../components/GameUtility/Handlers/generalHandlers.jsx";
 import styles from "../CSSModules/game.module.css";
 
 function Game() {
@@ -27,15 +31,18 @@ function Game() {
   const sprites = ["monkey", "balloonGunner", "balloonBomber"];
   const routes = enemyRoutes[mapName] || [];
 
+  const [gameResetKey, setGameResetKey] = useState(Date.now());
+
   const [showGrid, setShowGrid] = useState(false);
   const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
   const [selectedEnemy, setSelectedEnemy] = useState(null);
-  const [selectedTower, setSelectedTower] = useState(null); 
-  const [activeTower, setActiveTower] = useState(null); 
+  const [selectedTower, setSelectedTower] = useState(null);
+  const [activeTower, setActiveTower] = useState(null);
   const [placedTowers, setPlacedTowers] = useState([]);
   const [relocatingTower, setRelocatingTower] = useState(null);
   const [relocatePos, setRelocatePos] = useState(null);
+  const [gameOver, setGameOver] = useState(false);
 
   const [previewPos, updatePreview, clearPreview, setPreviewPos] =
     usePreview(selectedTower, gridCellSize);
@@ -44,44 +51,8 @@ function Game() {
   const restrictedCellsArray = getRestrictedCells(mapName, placementRules, routes);
   const towerSelectionRef = useRef(null);
 
-  const getClickedTower = (x, y) => {
-    for (let i = placedTowers.length - 1; i >= 0; i--) {
-      const tower = placedTowers[i];
-      const cols = tower.gridHighlight?.cols || 2;
-      const rows = tower.gridHighlight?.rows || 2;
-      const towerWidth = gridCellSize * cols;
-      const towerHeight = gridCellSize * rows;
-      if (
-        x >= tower.left &&
-        x <= tower.left + towerWidth &&
-        y >= tower.top &&
-        y <= tower.top + towerHeight
-      ) {
-        return tower;
-      }
-    }
-    return null;
-  };
-
-  const defaultMouseMoveHandler = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const towerUnderMouse = getClickedTower(mouseX, mouseY);
-    e.currentTarget.style.cursor = towerUnderMouse ? "pointer" : "default";
-  };
-
-  const defaultClickHandler = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
-    const tower = getClickedTower(clickX, clickY);
-    if (tower) {
-      setActiveTower(tower);
-    } else {
-      setActiveTower(null);
-    }
-  };
+  const defaultMouseMoveHandler = createDefaultMouseMoveHandler(placedTowers, gridCellSize);
+  const defaultClickHandler = createDefaultClickHandler(placedTowers, gridCellSize, setActiveTower);
 
   const handleCellClick = createHandleCellClick(
     selectedTower,
@@ -114,34 +85,44 @@ function Game() {
     handleRelocateOption(activeTower, setPlacedTowers, setActiveTower, setRelocatingTower);
   };
 
-  const handleUpgrade = () => {
-    if (!activeTower) return;
-    alert(`Upgrading tower ${activeTower.name}!`);
-    setActiveTower(null);
-  };
   useEffect(() => {
-    const handleDocumentClick = (e) => {
-      if (
-        (towerSelectionRef.current &&
-          towerSelectionRef.current.contains(e.target)) ||
-        (e.target &&
-          e.target.classList &&
-          e.target.classList.contains("interactive-grid"))
-      ) {
-        return;
-      }
-      setSelectedTower(null);
-      setActiveTower(null);
-      setRelocatingTower(null);
-    };
-    document.addEventListener("mousedown", handleDocumentClick);
-    return () =>
-      document.removeEventListener("mousedown", handleDocumentClick);
+    const docClickHandler = createDocumentClickHandler(
+      towerSelectionRef,
+      setSelectedTower,
+      setActiveTower,
+      setRelocatingTower
+    );
+    document.addEventListener("mousedown", docClickHandler);
+    return () => document.removeEventListener("mousedown", docClickHandler);
   }, []);
 
   useEffect(() => {
     console.log("Placed Towers:", placedTowers);
   }, [placedTowers]);
+
+  useEffect(() => {
+    const handleGameOver = (e) => {
+      if (e.detail.gameOver) {
+        setGameOver(true);
+      }
+    };
+    window.addEventListener("gameOver", handleGameOver);
+    return () => window.removeEventListener("gameOver", handleGameOver);
+  }, []);
+
+  const restartHandler = () => {
+    generalHandleRestart({
+      setGameOver,
+      setPlacedTowers,
+      setSelectedTower,
+      setActiveTower,
+      setRelocatingTower,
+      setPreviewPos,
+      player,
+      initialPlayerHP: 100,
+    });
+    setGameResetKey(Date.now());
+  };
 
   return (
     <>
@@ -207,6 +188,7 @@ function Game() {
             onClick={mapClickHandler}
           >
             <Canvas
+              key={gameResetKey}
               mapName={mapName}
               sprites={sprites}
               towers={placedTowers}
@@ -259,7 +241,7 @@ function Game() {
                   activeTower={activeTower}
                   gridCellSize={gridCellSize}
                   onRelocate={onRelocateOption}
-                  onUpgrade={handleUpgrade}
+                  onUpgrade={() => handleUpgrade(activeTower, setActiveTower)}
                   moveIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(90deg)"
                   upgradeIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(270deg)"
                 />
@@ -268,6 +250,7 @@ function Game() {
           </div>
         </div>
       </div>
+      {gameOver && <GameOverScreen onRestart={restartHandler} />}
     </>
   );
 }

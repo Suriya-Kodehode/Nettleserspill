@@ -11,8 +11,7 @@ export const createHandleCellClick = (
   return ({ col, row, event }) => {
     if (selectedTower) {
       const cellPos =
-        previewPos ||
-        {
+        previewPos || {
           col,
           row,
           left: col * gridCellSize,
@@ -42,9 +41,6 @@ export const createHandleCellClick = (
       const left = cellPos.col * gridCellSize;
       const top = cellPos.row * gridCellSize;
       const newTower = { ...selectedTower, top, left, x: left, y: top };
-      if (newTower.sprite) {
-        newTower.image = selectedTower.image;
-      }
       setPlacedTowers((prev) => [...prev, newTower]);
       setSelectedTower(null);
       setPreviewPos(null);
@@ -139,5 +135,30 @@ export const handleRelocateOption = (
   if (!activeTower) return;
   setPlacedTowers((prev) => prev.filter((t) => t.id !== activeTower.id));
   setRelocatingTower(activeTower);
+  setActiveTower(null);
+};
+
+export const getClickedTower = (x, y, towers, gridCellSize) => {
+  for (let i = towers.length - 1; i >= 0; i--) {
+    const tower = towers[i];
+    const cols = tower.gridHighlight?.cols || 2;
+    const rows = tower.gridHighlight?.rows || 2;
+    const towerWidth = gridCellSize * cols;
+    const towerHeight = gridCellSize * rows;
+    if (
+      x >= tower.left &&
+      x <= tower.left + towerWidth &&
+      y >= tower.top &&
+      y <= tower.top + towerHeight
+    ) {
+      return tower;
+    }
+  }
+  return null;
+};
+
+export const handleUpgrade = (activeTower, setActiveTower) => {
+  if (!activeTower) return;
+  alert(`Upgrading tower ${activeTower.name}!`);
   setActiveTower(null);
 };
