@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { iconImages } from "../../assets/imageSource.jsx";
+import { iconImages } from "../../../../src/assets/imageSource.jsx";
 
 const TowerOptions = ({
   activeTower,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "../../CSSModules/Tower.module.css";
-import TowerSelection from "../UI/TowerSelection.jsx";
+import TowerSelection from "../UI/Tower/TowerSelection.jsx";
 
 export default function Tower({ top, left }) {
   const [showSelection, setShowSelection] = useState(false);

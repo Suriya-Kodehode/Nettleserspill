@@ -1,7 +1,7 @@
 import React from "react";
-import { towerData } from "../GameData/towerData.jsx";
-import StaticImage from "../Functions/StaticImage.jsx"; 
-import styles from "../../CSSModules/game.module.css";
+import { towerData } from "../../GameData/towerData.jsx";
+import StaticImage from "../../Functions/StaticImage.jsx"; 
+import styles from "../../../CSSModules/game.module.css";
 
 const TowerSelection = React.forwardRef(({ selectedTower, onTowerSelect }, ref) => {
   const selectableTowers = Object.values(towerData).filter(
