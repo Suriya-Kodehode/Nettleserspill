@@ -1,11 +1,15 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
-import { preloadStaticSprites, loadAnimatedFrames } from "../GameUtility/spriteLoader.jsx";
 import { mapConfigs } from "../GameData/mapConfig.jsx";
 import { getEnemyPath } from "../GameUtility/enemyPath.jsx";
 import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
-import { getClickedEnemy, renderEnemiesOnCanvas } from "../GameComponents/Renderer/enemyRender.jsx";
+import { renderEnemiesOnCanvas } from "../GameComponents/Renderer/enemyRender.jsx";
 import { renderTowersOnCanvas } from "../GameComponents/Renderer/towerRender.jsx";
+
+import { useSprites } from "../GameUtility/hooks/useSprites.jsx";
+import useCanvasAnimation from "../GameUtility/hooks/useCanvasAnimation.jsx";
+import { getClickedTower } from "../GameUtility/helpers/towerHelpers.jsx";
+import { getClickedEnemy } from "../GameComponents/Renderer/enemyRender.jsx";
 
 const Canvas = ({
   mapName = "newDawn",
@@ -18,15 +22,20 @@ const Canvas = ({
   selectedEnemy,
   gridCellSize = 16,
   disableCanvasClick = true,
+  isRelocating = false,
 }) => {
   const canvasRef = useRef(null);
   const gameMapRef = useRef(null);
   const bgCanvasRef = useRef(null);
   const spawnTimeoutIdsRef = useRef([]);
+
   const [enemies, setEnemies] = useState([]);
   const enemiesRef = useRef(enemies);
+  useEffect(() => {
+    enemiesRef.current = enemies;
+  }, [enemies]);
+
   const [bgLoaded, setBgLoaded] = useState(false);
-  const [assetImages, setAssetImages] = useState({});
   const mapConfig = mapConfigs[mapName];
 
   const finalSprites = useMemo(() => {
@@ -34,57 +43,12 @@ const Canvas = ({
     return [...spriteSet];
   }, [sprites]);
 
-  useEffect(() => {
-    (async () => {
-      const { images } = await preloadStaticSprites(finalSprites);
-      setAssetImages(images);
-    })();
-  }, [finalSprites]);
-
-  const animatedFramesRef = useRef({});
-  useEffect(() => {
-    loadAnimatedFrames(finalSprites).then((mapping) => {
-      animatedFramesRef.current = mapping;
-    });
-  }, [finalSprites]);
-
-  useEffect(() => {
-    enemiesRef.current = enemies;
-  }, [enemies]);
-
-  const bgLoadedRef = useRef(bgLoaded);
-  useEffect(() => {
-    bgLoadedRef.current = bgLoaded;
-  }, [bgLoaded]);
-
-  const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
-  const scale = 0.8;
-
-  const getClickedTower = (x, y) => {
-    for (let i = towers.length - 1; i >= 0; i--) {
-      const tower = towers[i];
-      const cols = tower.gridHighlight?.cols || 2;
-      const rows = tower.gridHighlight?.rows || 2;
-      const towerWidth = gridCellSize * cols;
-      const towerHeight = gridCellSize * rows;
-      if (
-        x >= tower.left &&
-        x <= tower.left + towerWidth &&
-        y >= tower.top &&
-        y <= tower.top + towerHeight
-      ) {
-        return tower;
-      }
-    }
-    return null;
-  };
+  const { assetImages, animatedFrames } = useSprites(finalSprites);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const context = canvas.getContext("2d");
-    const { width, height, offsetX, offsetY } = mapConfig;
-
+    const { width, height } = mapConfig;
     if (!gameMapRef.current) {
       gameMapRef.current = new Image();
     }
@@ -100,42 +64,62 @@ const Canvas = ({
       gameMapRef.current.onerror = () =>
         console.error(`Failed to load map image: ${mapConfig.mapSrc}`);
     }
+  }, [mapConfig]);
 
-    let animationFrameId;
-    const render = (timestamp) => {
-      context.clearRect(0, 0, width, height);
-      if (bgLoadedRef.current && bgCanvasRef.current) {
-        context.drawImage(bgCanvasRef.current, 0, 0);
-      }
-      
-      renderEnemiesOnCanvas(
-        context,
-        enemiesRef.current,
-        enemyPath,
-        offsetX,
-        offsetY,
-        offsetMultiplier,
-        timestamp,
-        assetImages,
-        { current: animatedFramesRef.current },
-        selectedEnemy,
-        scale
-      );
+  const enemyPath = useMemo(() => getEnemyPath(mapName), [mapName]);
+  const scale = 0.8;
 
-      renderTowersOnCanvas(
-        context,
-        towers,
-        { current: animatedFramesRef.current },
-        assetImages,
-        gridCellSize,
-        timestamp
-      );
+  const renderCanvas = (ctx, timestamp) => {
+    const { width, height, offsetX, offsetY } = mapConfig;
+    ctx.clearRect(0, 0, width, height);
+    if (bgLoaded && bgCanvasRef.current) {
+      ctx.drawImage(bgCanvasRef.current, 0, 0);
+    }
+    renderEnemiesOnCanvas(
+      ctx,
+      enemiesRef.current,
+      enemyPath,
+      offsetX,
+      offsetY,
+      offsetMultiplier,
+      timestamp,
+      assetImages,
+      animatedFrames,
+      selectedEnemy,
+      scale
+    );
+    renderTowersOnCanvas(
+      ctx,
+      towers,
+      animatedFrames,
+      assetImages,
+      gridCellSize,
+      timestamp
+    );
+  };
 
-      animationFrameId = requestAnimationFrame(render);
-    };
-    animationFrameId = requestAnimationFrame(render);
+  useCanvasAnimation(
+    canvasRef,
+    renderCanvas,
+    [
+      bgLoaded,
+      assetImages,
+      animatedFrames,
+      enemyPath,
+      offsetMultiplier,
+      scale,
+      towers,
+      selectedEnemy,
+      gridCellSize,
+      mapConfig,
+    ]
+  );
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     const handleCanvasClick = (event) => {
+      if (isRelocating) return; 
       if (disableCanvasClick) {
         event.stopPropagation();
         return;
@@ -143,7 +127,7 @@ const Canvas = ({
       const rect = canvas.getBoundingClientRect();
       const clickX = event.clientX - rect.left;
       const clickY = event.clientY - rect.top;
-      const clickedTower = getClickedTower(clickX, clickY);
+      const clickedTower = getClickedTower(clickX, clickY, towers, gridCellSize);
       if (clickedTower && onTowerClick) {
         onTowerClick(clickedTower);
         return;
@@ -160,24 +144,22 @@ const Canvas = ({
       );
       onEnemyClick && onEnemyClick(clickedEnemy || null);
     };
+
     canvas.addEventListener("click", handleCanvasClick);
     return () => {
-      cancelAnimationFrame(animationFrameId);
       canvas.removeEventListener("click", handleCanvasClick);
     };
   }, [
-    finalSprites,
-    enemyPath,
-    offsetMultiplier,
-    onEnemyClick,
-    scale,
-    towers,
-    mapConfig,
-    selectedEnemy,
-    gridCellSize,
-    assetImages,
     disableCanvasClick,
+    isRelocating,
+    towers,
+    gridCellSize,
     onTowerClick,
+    onEnemyClick,
+    enemyPath,
+    mapConfig,
+    offsetMultiplier,
+    scale,
   ]);
 
   useEffect(() => {

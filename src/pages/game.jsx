@@ -15,8 +15,17 @@ import { mapConfigs } from "../components/GameData/mapConfig.jsx";
 import { enemyRoutes, placementRules } from "../components/Functions/placementRules.jsx";
 import { getRestrictedCells } from "../components/GameUtility/restrictions.jsx";
 import { usePreview } from "../components/GameUtility/hooks/usePreview.jsx";
-import { createHandleCellClick, createMapMouseMoveHandler, createMapClickHandler,handleRelocateOption, handleUpgrade, } from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
-import { createDefaultMouseMoveHandler, createDefaultClickHandler, } from "../components/GameUtility/Handlers/defaultHandlers.jsx";
+import {
+  createHandleCellClick,
+  createMapMouseMoveHandler,
+  createMapClickHandler,
+  handleRelocateOption,
+  handleUpgrade,
+} from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
+import {
+  createDefaultMouseMoveHandler,
+  createDefaultClickHandler,
+} from "../components/GameUtility/Handlers/defaultHandlers.jsx";
 import { handleRestart as generalHandleRestart } from "../components/GameUtility/Handlers/generalHandlers.jsx";
 import useDocumentClickHandler from "../components/GameUtility/hooks/useDocumentClickHandler.jsx";
 import useGameOverListener from "../components/GameUtility/hooks/useGameOverListener.jsx";
@@ -82,15 +91,8 @@ function Game() {
     handleRelocateOption(activeTower, setPlacedTowers, setActiveTower, setRelocatingTower);
   };
 
-  useDocumentClickHandler(
-    towerSelectionRef,
-    setSelectedTower,
-    setActiveTower,
-    setRelocatingTower
-  );
-
+  useDocumentClickHandler(towerSelectionRef, setSelectedTower, setActiveTower, setRelocatingTower);
   useLogPlacedTowers(placedTowers);
-
   useGameOverListener(setGameOver);
 
   const restartHandler = () => {
@@ -183,6 +185,7 @@ function Game() {
               selectedEnemy={selectedEnemy}
               gridCellSize={gridCellSize}
               disableCanvasClick={selectedTower ? true : false}
+              isRelocating={Boolean(relocatingTower)}
             />
             <InteractiveGrid
               showGrid={showGrid}

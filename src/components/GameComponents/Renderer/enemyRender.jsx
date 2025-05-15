@@ -19,7 +19,6 @@ export const renderEnemiesOnCanvas = (
     const cycleTime = timestamp - enemy.spawnTime;
     if (cycleTime < 0) return;
 
-
     const lastKeyframe = enemyPath[enemyPath.length - 1];
     if (cycleTime >= lastKeyframe.time) {
       if (!enemy.hitPlayer) {
@@ -43,9 +42,10 @@ export const renderEnemiesOnCanvas = (
       console.error(`Missing enemy data for sprite: ${enemy.sprite}`);
       return;
     }
+
     const { pathOffset = { x: 0, y: 0 } } = spriteData;
-    const adjustedX = baseX + pathOffset.x;
-    const adjustedY = baseY + pathOffset.y;
+    const adjustedX = baseX + (pathOffset.x || 0);
+    const adjustedY = baseY + (pathOffset.y || 0);
 
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
@@ -81,7 +81,7 @@ export const renderEnemiesOnCanvas = (
     if (selectedEnemy && enemy === selectedEnemy) {
       let hitbox = spriteData.defaultHitbox;
       const outlineSettings = spriteData.outline || {};
-      const margin = outlineSettings.margin !== undefined ? outlineSettings.margin : 0;
+      const margin = typeof outlineSettings.margin !== "undefined" ? outlineSettings.margin : 0;
       hitbox = {
         x: hitbox.x,
         y: hitbox.y,
@@ -89,13 +89,12 @@ export const renderEnemiesOnCanvas = (
         height: hitbox.height + margin,
       };
 
-
-      const shiftX = outlineSettings.shiftX !== undefined ? outlineSettings.shiftX : 0;
-      const shiftY = outlineSettings.shiftY !== undefined ? outlineSettings.shiftY : 0;
+      const shiftX = typeof outlineSettings.shiftX !== "undefined" ? outlineSettings.shiftX : 0;
+      const shiftY = typeof outlineSettings.shiftY !== "undefined" ? outlineSettings.shiftY : 0;
       
       const outlineColor = outlineSettings.outlineColor || outlineSettings.color || "red";
-      const outlineLineWidth = outlineSettings.lineWidth !== undefined ? outlineSettings.lineWidth : 3;
-      const outlineAlpha = outlineSettings.alpha !== undefined ? outlineSettings.alpha : 0.7;
+      const outlineLineWidth = typeof outlineSettings.lineWidth !== "undefined" ? outlineSettings.lineWidth : 3;
+      const outlineAlpha = typeof outlineSettings.alpha !== "undefined" ? outlineSettings.alpha : 0.7;
 
       const outlineWidth = hitbox.width * scale;
       const outlineHeight = hitbox.height * scale;
@@ -137,8 +136,8 @@ export const getClickedEnemy = (
     if (!spriteData) continue;
     
     const { pathOffset = { x: 0, y: 0 } } = spriteData;
-    const adjustedX = baseX + pathOffset.x;
-    const adjustedY = baseY + pathOffset.y;
+    const adjustedX = baseX + (pathOffset.x || 0);
+    const adjustedY = baseY + (pathOffset.y || 0);
     const drawnWidth = spriteData.width * scale;
     const drawnHeight = spriteData.height * scale;
     const centerX = adjustedX + spriteData.width / 2;

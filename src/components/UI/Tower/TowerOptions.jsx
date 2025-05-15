@@ -6,7 +6,7 @@ const TowerOptions = ({
   gridCellSize,
   onRelocate,
   onUpgrade,
-  moveIconFilter = "",
+  moveIconFilter = "", 
   upgradeIconFilter = ""
 }) => {
   if (!activeTower) return null;
@@ -17,7 +17,7 @@ const TowerOptions = ({
   const containerStyle = {
     position: "absolute",
     left: activeTower.left + towerWidth / 2,
-    top: activeTower.top - 60,
+    top: activeTower.top - 60, 
     padding: "10px",
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     borderRadius: "5px",
