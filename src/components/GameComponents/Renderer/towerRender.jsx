@@ -11,10 +11,7 @@ export const renderTowersOnCanvas = (
   towers.forEach((tower) => {
     let towerImage = null;
 
-    if (
-      resolvedAnimated[tower.src] &&
-      resolvedAnimated[tower.src].length > 0
-    ) {
+    if (resolvedAnimated[tower.src] && resolvedAnimated[tower.src].length > 0) {
       const frames = resolvedAnimated[tower.src];
       const frameDelay = frames.frameDelay || 100;
       const frameIndex = Math.floor(timestamp / frameDelay) % frames.length;
@@ -22,11 +19,9 @@ export const renderTowersOnCanvas = (
         `Rendering tower ${tower.id} with animated frames for "${tower.src}" - ${frames.length} frames available`
       );
       towerImage = frames[frameIndex];
-    }
-    else if (assetImages && assetImages[tower.src]) {
+    } else if (assetImages && assetImages[tower.src]) {
       towerImage = assetImages[tower.src];
-    }
-    else {
+    } else {
       towerImage = tower.src;
       if (typeof towerImage === "string") {
         const img = new Image();

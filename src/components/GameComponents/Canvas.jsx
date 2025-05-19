@@ -5,7 +5,6 @@ import { createBackgroundCanvas } from "../GameUtility/backgroundRenderer.jsx";
 import { spawnEnemies } from "../GameComponents/spawnEnemies.jsx";
 import { renderEnemiesOnCanvas } from "../GameComponents/Renderer/enemyRender.jsx";
 import { renderTowersOnCanvas } from "../GameComponents/Renderer/towerRender.jsx";
-
 import { useSprites } from "../GameUtility/hooks/useSprites.jsx";
 import useCanvasAnimation from "../GameUtility/hooks/useCanvasAnimation.jsx";
 import { getClickedTower } from "../GameUtility/helpers/towerHelpers.jsx";
@@ -119,14 +118,16 @@ const Canvas = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const handleCanvasClick = (event) => {
-      if (isRelocating) return; 
       if (disableCanvasClick) {
         event.stopPropagation();
         return;
       }
+      if (isRelocating) return;
+
       const rect = canvas.getBoundingClientRect();
       const clickX = event.clientX - rect.left;
       const clickY = event.clientY - rect.top;
+
       const clickedTower = getClickedTower(clickX, clickY, towers, gridCellSize);
       if (clickedTower && onTowerClick) {
         onTowerClick(clickedTower);
@@ -142,7 +143,7 @@ const Canvas = ({
         offsetMultiplier,
         scale
       );
-      onEnemyClick && onEnemyClick(clickedEnemy || null);
+      if (onEnemyClick) onEnemyClick(clickedEnemy || null);
     };
 
     canvas.addEventListener("click", handleCanvasClick);
@@ -175,12 +176,17 @@ const Canvas = ({
     };
   }, [mapConfig]);
 
+  const canvasStyle = {
+    ...style,
+    pointerEvents: isRelocating ? "none" : style.pointerEvents || "auto",
+  };
+
   return (
     <canvas
       ref={canvasRef}
       width={mapConfig.width}
       height={mapConfig.height}
-      style={style}
+      style={canvasStyle}
     >
       Your browser does not support the HTML5 canvas tag.
     </canvas>

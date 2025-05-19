@@ -1,4 +1,3 @@
-// /src/components/GameUtility/hooks/usePreview.jsx
 import { useState, useCallback } from "react";
 
 export const usePreview = (selectedTower, gridCellSize) => {
@@ -8,11 +7,17 @@ export const usePreview = (selectedTower, gridCellSize) => {
     (e) => {
       if (!selectedTower) return;
       const rect = e.currentTarget.getBoundingClientRect();
-      const left = e.clientX - rect.left;
-      const top = e.clientY - rect.top;
-      const col = Math.floor(left / gridCellSize);
-      const row = Math.floor(top / gridCellSize);
-      setPreviewPos({ left, top, col, row });
+      const { cols = 2, rows = 2 } = selectedTower.gridHighlight || {};
+      const towerWidth = gridCellSize * cols;
+      const towerHeight = gridCellSize * rows;
+      const left = e.clientX - rect.left - towerWidth / 2;
+      const top = e.clientY - rect.top - towerHeight / 2;
+      setPreviewPos({
+        left,
+        top,
+        col: Math.floor(left / gridCellSize),
+        row: Math.floor(top / gridCellSize),
+      });
     },
     [gridCellSize, selectedTower]
   );

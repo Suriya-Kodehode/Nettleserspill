@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import styles from "../../../CSSModules/TowerOptions.module.css";
 import { iconImages } from "../../../../src/assets/imageSource.jsx";
 
 const TowerOptions = ({
@@ -6,7 +7,7 @@ const TowerOptions = ({
   gridCellSize,
   onRelocate,
   onUpgrade,
-  moveIconFilter = "", 
+  moveIconFilter = "",
   upgradeIconFilter = ""
 }) => {
   if (!activeTower) return null;
@@ -14,72 +15,45 @@ const TowerOptions = ({
   const cols = activeTower.gridHighlight?.cols || 2;
   const towerWidth = gridCellSize * cols;
 
-  const containerStyle = {
-    position: "absolute",
-    left: activeTower.left + towerWidth / 2,
-    top: activeTower.top - 60, 
-    padding: "10px",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    borderRadius: "5px",
-    zIndex: 2000,
-    display: "flex",
-    justifyContent: "center",
-    transform: "translateX(-50%)",
-  };
-
-  const [hoverRelocate, setHoverRelocate] = useState(false);
-  const [hoverUpgrade, setHoverUpgrade] = useState(false);
-
-  const buttonStyle = {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    margin: "0 5px",
-    padding: "5px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const iconStyle = {
-    width: "24px",
-    height: "24px",
-  };
-
-  const relocateButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: hoverRelocate ? "orange" : "transparent",
-  };
-
-  const upgradeButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: hoverUpgrade ? "orange" : "transparent",
-  };
+  const leftValue = activeTower.left + towerWidth / 1.75;
+  const topValue = activeTower.top - 40;
 
   return (
-    <div style={containerStyle}>
+    <div
+      className={styles.container}
+      style={{
+        "--left": leftValue + "px",
+        "--top": topValue + "px"
+      }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
       <button
-        style={relocateButtonStyle}
-        onClick={onRelocate}
-        onMouseOver={() => setHoverRelocate(true)}
-        onMouseOut={() => setHoverRelocate(false)}
+        className={styles.relocateButton}
+        onClick={(e) => {
+          e.stopPropagation();
+          onRelocate();
+        }}
       >
         <img
           src={iconImages.moveIcon}
           alt="Relocate"
-          style={{ ...iconStyle, filter: moveIconFilter }}
+          className={`${styles.icon} ${styles.moveIcon}`}
+          style={moveIconFilter ? { "--move-icon-filter": moveIconFilter } : {}}
         />
       </button>
       <button
-        style={upgradeButtonStyle}
-        onClick={onUpgrade}
-        onMouseOver={() => setHoverUpgrade(true)}
-        onMouseOut={() => setHoverUpgrade(false)}
+        className={styles.upgradeButton}
+        onClick={(e) => {
+          e.stopPropagation();
+          onUpgrade();
+        }}
       >
         <img
           src={iconImages.upgradeIcon}
           alt="Upgrade"
-          style={{ ...iconStyle, filter: upgradeIconFilter }}
+          className={`${styles.icon} ${styles.upgradeIcon}`}
+          style={upgradeIconFilter ? { "--upgrade-icon-filter": upgradeIconFilter } : {}}
         />
       </button>
     </div>

@@ -21,7 +21,7 @@ const TowerPreview = ({
     width,
     height,
     pointerEvents: "none",
-    transform: "translate(-50%, -50%)",
+    transform: "none", 
     ...style,
   };
 
@@ -32,13 +32,20 @@ const TowerPreview = ({
     containerStyle.opacity = 1;
   }
 
+  let computedCol, computedRow;
+  if (isRelocating) {
+    computedCol = Math.floor((previewPos.left + width / 2) / gridCellSize);
+    computedRow = Math.floor((previewPos.top + height / 2) / gridCellSize);
+  } else {
+    computedCol = previewPos.col ?? 0;
+    computedRow = previewPos.row ?? 0;
+  }
+  
   return (
     <div style={containerStyle}>
       {Array.from({ length: rows }).map((_, r) =>
         Array.from({ length: cols }).map((_, c) => {
-          const previewCol = previewPos.col || 0;
-          const previewRow = previewPos.row || 0;
-          const cellKey = `${previewCol + c}-${previewRow + r}`;
+          const cellKey = `${computedCol + c}-${computedRow + r}`;
           const isRestricted =
             restrictedCellsArray.includes(cellKey) ||
             restrictedCellsArray.includes(cellKey.replace("-", ","));
@@ -54,7 +61,7 @@ const TowerPreview = ({
                 boxSizing: "border-box",
                 backgroundColor: isRestricted
                   ? "rgba(255, 165, 0, 0.5)" // orange for disallowed
-                  : "rgba(0, 128, 0, 0.3)",   // green for allowed
+                  : "rgba(0, 128, 0, 0.3)",    // green for allowed
                 border: `1px solid ${isRestricted ? "orange" : "lime"}`,
               }}
             ></div>

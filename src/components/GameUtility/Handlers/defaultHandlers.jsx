@@ -1,5 +1,4 @@
-
-import { getClickedTower } from "./towerInteractionHandlers.jsx";
+import { getClickedTower } from "../helpers/towerHelpers.jsx";
 
 export const createDefaultMouseMoveHandler = (placedTowers, gridCellSize) => {
   return (e) => {

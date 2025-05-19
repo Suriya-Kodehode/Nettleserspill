@@ -1,14 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import Canvas from "../components/GameComponents/Canvas.jsx";
-import PlayerStatus, { player } from "../components/UI/PlayerStatus.jsx";
-import ToggleGrid from "../components/UI/ToggleGrid.jsx";
-import InteractiveGrid from "../components/Functions/GridTool/InteractiveGrid.jsx";
-import DisallowedOverlay from "../components/Functions/GridTool/DisallowedOverlay.jsx";
-import DisallowedButton from "../components/UI/DisallowedButton.jsx";
-import TowerSelection from "../components/UI/Tower/TowerSelection.jsx";
-import TowerPreview from "../components/UI/Tower/TowerPreview.jsx";
-import TowerRangeOverlay from "../components/UI/Tower/TowerRangeOverlay.jsx";
-import TowerOptions from "../components/UI/Tower/TowerOptions.jsx";
+import StatusPanel from "../components/UI/StatusPanel.jsx";
+import ControlPanel from "../components/UI/ControlPanel.jsx";
+import GameMap from "../components/GameComponents/GameMap.jsx";
 import Pause from "../components/UI/Pause.jsx";
 import GameOverScreen from "../components/UI/GameOverScreen.jsx";
 import { mapConfigs } from "../components/GameData/mapConfig.jsx";
@@ -19,8 +12,8 @@ import {
   createHandleCellClick,
   createMapMouseMoveHandler,
   createMapClickHandler,
-  handleRelocateOption,
-  handleUpgrade,
+  handleRelocateStart,
+  cancelRelocation,
 } from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
 import {
   createDefaultMouseMoveHandler,
@@ -30,15 +23,16 @@ import { handleRestart as generalHandleRestart } from "../components/GameUtility
 import useDocumentClickHandler from "../components/GameUtility/hooks/useDocumentClickHandler.jsx";
 import useGameOverListener from "../components/GameUtility/hooks/useGameOverListener.jsx";
 import useLogPlacedTowers from "../components/GameUtility/hooks/useLogPlacedTowers.jsx";
+import { player } from "../components/UI/PlayerStatus.jsx";
 import styles from "../CSSModules/game.module.css";
 
 function Game() {
   const mapName = "newDawn";
   const sprites = ["monkey", "balloonGunner", "balloonBomber"];
   const routes = enemyRoutes[mapName] || [];
+  const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
 
   const [gameResetKey, setGameResetKey] = useState(Date.now());
-
   const [showGrid, setShowGrid] = useState(false);
   const [showDisallowed, setShowDisallowed] = useState(false);
   const [gridCellSize, setGridCellSize] = useState(16);
@@ -47,15 +41,15 @@ function Game() {
   const [activeTower, setActiveTower] = useState(null);
   const [placedTowers, setPlacedTowers] = useState([]);
   const [relocatingTower, setRelocatingTower] = useState(null);
-  const [relocatePos, setRelocatePos] = useState(null);
+  const [ghostRelocatePos, setGhostRelocatePos] = useState(null);
   const [gameOver, setGameOver] = useState(false);
 
   const [previewPos, updatePreview, clearPreview, setPreviewPos] =
     usePreview(selectedTower, gridCellSize);
 
-  const { width: canvasWidth, height: canvasHeight } = mapConfigs[mapName];
   const restrictedCellsArray = getRestrictedCells(mapName, placementRules, routes);
   const towerSelectionRef = useRef(null);
+  const gameContainerRef = useRef(null);
 
   const defaultMouseMoveHandler = createDefaultMouseMoveHandler(placedTowers, gridCellSize);
   const defaultClickHandler = createDefaultClickHandler(placedTowers, gridCellSize, setActiveTower);
@@ -65,6 +59,7 @@ function Game() {
     previewPos,
     gridCellSize,
     restrictedCellsArray,
+    placedTowers,
     setPlacedTowers,
     setSelectedTower,
     setPreviewPos
@@ -73,22 +68,36 @@ function Game() {
   const mapMouseMoveHandler = createMapMouseMoveHandler(
     relocatingTower,
     gridCellSize,
-    setRelocatePos,
+    setGhostRelocatePos,
     defaultMouseMoveHandler
   );
 
   const mapClickHandler = createMapClickHandler(
     relocatingTower,
     gridCellSize,
+    placedTowers,
     setPlacedTowers,
     setRelocatingTower,
-    setRelocatePos,
+    setGhostRelocatePos,
     restrictedCellsArray,
-    defaultClickHandler
+    defaultClickHandler,
+    ghostRelocatePos
   );
 
   const onRelocateOption = () => {
-    handleRelocateOption(activeTower, setPlacedTowers, setActiveTower, setRelocatingTower);
+    if (activeTower) {
+      handleRelocateStart(activeTower, setRelocatingTower);
+      setGhostRelocatePos({ left: activeTower.left, top: activeTower.top });
+      console.log("Relocate button clicked. Tower marked for relocation.");
+    }
+  };
+
+  const onUpgradeOption = () => {
+    console.log("Upgrade button clicked for tower:", activeTower);
+    setActiveTower(null);
+  };
+  const cancelRelocationHandler = () => {
+    cancelRelocation(setRelocatingTower, setGhostRelocatePos);
   };
 
   useDocumentClickHandler(towerSelectionRef, setSelectedTower, setActiveTower, setRelocatingTower);
@@ -109,131 +118,84 @@ function Game() {
     setGameResetKey(Date.now());
   };
 
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape" && relocatingTower) {
+        cancelRelocationHandler();
+      }
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [relocatingTower]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        relocatingTower &&
+        gameContainerRef.current &&
+        !gameContainerRef.current.contains(event.target)
+      ) {
+        cancelRelocationHandler();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [relocatingTower]);
+
   return (
     <>
       <div>
         <Pause />
       </div>
-      <div className={styles.gameContainer}>
-        <div className={styles.statusContainer}>
-          <div className={styles.playerStatus}>
-            <PlayerStatus player={player} />
-          </div>
-          <div className={styles.enemyDetails}>
-            {selectedEnemy ? (
-              <div>
-                <h3>
-                  {(selectedEnemy.name || selectedEnemy.sprite)
-                    .charAt(0)
-                    .toUpperCase() +
-                    (selectedEnemy.name || selectedEnemy.sprite).slice(1)}
-                </h3>
-                <p>HP: {selectedEnemy.hp}</p>
-              </div>
-            ) : (
-              <p>Select an enemy to see its details</p>
-            )}
-          </div>
-        </div>
-        <div className={styles.utilityContainer}>
-          <ToggleGrid
-            showGrid={showGrid}
-            onToggle={() => setShowGrid(!showGrid)}
-            gridCellSize={gridCellSize}
-            onCellSizeChange={setGridCellSize}
-          />
-          <DisallowedButton
-            showDisallowed={showDisallowed}
-            toggleShowDisallowed={() => setShowDisallowed(!showDisallowed)}
-          />
-          <TowerSelection
-            ref={towerSelectionRef}
-            selectedTower={selectedTower}
-            onTowerSelect={setSelectedTower}
-          />
-        </div>
+      <div className={styles.gameContainer} ref={gameContainerRef}>
+        <StatusPanel player={player} selectedEnemy={selectedEnemy} />
+        <ControlPanel
+          showGrid={showGrid}
+          onToggleGrid={() => setShowGrid(!showGrid)}
+          gridCellSize={gridCellSize}
+          onCellSizeChange={setGridCellSize}
+          showDisallowed={showDisallowed}
+          toggleShowDisallowed={() => setShowDisallowed(!showDisallowed)}
+          towerSelectionRef={towerSelectionRef}
+          selectedTower={selectedTower}
+          onTowerSelect={setSelectedTower}
+        />
         <div className={styles.mapContainer}>
-          <div
-            style={{
-              position: "relative",
-              width: canvasWidth,
-              height: canvasHeight,
+          <GameMap
+            canvasWidth={canvasWidth}
+            canvasHeight={canvasHeight}
+            mapName={mapName}
+            sprites={sprites}
+            placedTowers={placedTowers}
+            selectedEnemy={selectedEnemy}
+            onEnemyClick={setSelectedEnemy}
+            onTowerClick={(tower, e) => {
+              console.log("Placed tower clicked:", tower);
+              if (e) e.stopPropagation();
+              setActiveTower(tower);
             }}
-            onMouseMove={(e) => {
-              if (selectedTower) {
-                updatePreview(e);
-              } else {
-                mapMouseMoveHandler(e);
-              }
-            }}
-            onMouseLeave={() => {
-              clearPreview();
-              document.body.style.cursor = "default";
-            }}
-            onClick={mapClickHandler}
-          >
-            <Canvas
-              key={gameResetKey}
-              mapName={mapName}
-              sprites={sprites}
-              towers={placedTowers}
-              onEnemyClick={setSelectedEnemy}
-              onTowerClick={(tower) => {
-                console.log("Placed tower clicked via Canvas:", tower);
-                setActiveTower(tower);
-              }}
-              selectedEnemy={selectedEnemy}
-              gridCellSize={gridCellSize}
-              disableCanvasClick={selectedTower ? true : false}
-              isRelocating={Boolean(relocatingTower)}
-            />
-            <InteractiveGrid
-              showGrid={showGrid}
-              width={canvasWidth}
-              height={canvasHeight}
-              gridCellSize={gridCellSize}
-              onCellClick={handleCellClick}
-              style={{ pointerEvents: selectedTower ? "auto" : "none" }}
-            />
-            {showDisallowed && (
-              <DisallowedOverlay
-                restrictedCells={restrictedCellsArray}
-                gridCellSize={gridCellSize}
-              />
-            )}
-            {selectedTower && previewPos && (
-              <TowerPreview
-                previewPos={previewPos}
-                gridCellSize={gridCellSize}
-                selectedTower={selectedTower}
-                restrictedCellsArray={restrictedCellsArray}
-              />
-            )}
-            {relocatingTower && relocatePos && (
-              <TowerPreview
-                previewPos={relocatePos}
-                gridCellSize={gridCellSize}
-                selectedTower={relocatingTower}
-                restrictedCellsArray={restrictedCellsArray}
-              />
-            )}
-            {activeTower && !relocatingTower && (
-              <>
-                <TowerRangeOverlay
-                  activeTower={activeTower}
-                  gridCellSize={gridCellSize}
-                />
-                <TowerOptions
-                  activeTower={activeTower}
-                  gridCellSize={gridCellSize}
-                  onRelocate={onRelocateOption}
-                  onUpgrade={() => handleUpgrade(activeTower, setActiveTower)}
-                  moveIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(90deg)"
-                  upgradeIconFilter="invert(1) sepia(1) saturate(10000%) hue-rotate(270deg)"
-                />
-              </>
-            )}
-          </div>
+            gridCellSize={gridCellSize}
+            selectedTower={selectedTower}
+            previewPos={previewPos}
+            relocatingTower={relocatingTower}
+            relocatePos={ghostRelocatePos}
+            handleCellClick={handleCellClick}
+            mapMouseMoveHandler={mapMouseMoveHandler}
+            mapClickHandler={mapClickHandler}
+            restrictedCellsArray={restrictedCellsArray}
+            activeTower={activeTower}
+            onRelocate={onRelocateOption}
+            onUpgrade={onUpgradeOption}
+            showDisallowed={showDisallowed}
+            showGrid={showGrid}
+            updatePreview={updatePreview}
+            clearPreview={clearPreview}
+            setSelectedTower={setSelectedTower}
+            setPreviewPos={setPreviewPos}
+            setRelocatingTower={setRelocatingTower}
+            setRelocatePos={setGhostRelocatePos}
+            setPlacedTowers={setPlacedTowers}
+          />
         </div>
       </div>
       {gameOver && <GameOverScreen onRestart={restartHandler} />}
