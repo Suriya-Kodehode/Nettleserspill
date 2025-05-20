@@ -15,10 +15,7 @@ import {
   handleRelocateStart,
   cancelRelocation,
 } from "../components/GameUtility/Handlers/towerInteractionHandlers.jsx";
-import {
-  createDefaultMouseMoveHandler,
-  createDefaultClickHandler,
-} from "../components/GameUtility/Handlers/defaultHandlers.jsx";
+import { createDefaultMouseMoveHandler, createDefaultClickHandler } from "../components/GameUtility/Handlers/defaultHandlers.jsx";
 import { handleRestart as generalHandleRestart } from "../components/GameUtility/Handlers/generalHandlers.jsx";
 import useDocumentClickHandler from "../components/GameUtility/hooks/useDocumentClickHandler.jsx";
 import useGameOverListener from "../components/GameUtility/hooks/useGameOverListener.jsx";
@@ -42,6 +39,7 @@ function Game() {
   const [placedTowers, setPlacedTowers] = useState([]);
   const [relocatingTower, setRelocatingTower] = useState(null);
   const [ghostRelocatePos, setGhostRelocatePos] = useState(null);
+  const [isRelocateLocked, setIsRelocateLocked] = useState(false);
   const [gameOver, setGameOver] = useState(false);
 
   const [previewPos, updatePreview, clearPreview, setPreviewPos] =
@@ -59,7 +57,6 @@ function Game() {
     previewPos,
     gridCellSize,
     restrictedCellsArray,
-    placedTowers,
     setPlacedTowers,
     setSelectedTower,
     setPreviewPos
@@ -69,26 +66,18 @@ function Game() {
     relocatingTower,
     gridCellSize,
     setGhostRelocatePos,
-    defaultMouseMoveHandler
+    defaultMouseMoveHandler,
+    isRelocateLocked
   );
 
-  const mapClickHandler = createMapClickHandler(
-    relocatingTower,
-    gridCellSize,
-    placedTowers,
-    setPlacedTowers,
-    setRelocatingTower,
-    setGhostRelocatePos,
-    restrictedCellsArray,
-    defaultClickHandler,
-    ghostRelocatePos
-  );
+  const mapClickHandler = createMapClickHandler(relocatingTower, defaultClickHandler);
 
   const onRelocateOption = () => {
     if (activeTower) {
       handleRelocateStart(activeTower, setRelocatingTower);
       setGhostRelocatePos({ left: activeTower.left, top: activeTower.top });
-      console.log("Relocate button clicked. Tower marked for relocation.");
+      setIsRelocateLocked(false);
+      console.log("Relocate activated; ghost preview started.");
     }
   };
 
@@ -96,11 +85,18 @@ function Game() {
     console.log("Upgrade button clicked for tower:", activeTower);
     setActiveTower(null);
   };
+
   const cancelRelocationHandler = () => {
     cancelRelocation(setRelocatingTower, setGhostRelocatePos);
+    setIsRelocateLocked(false);
   };
 
-  useDocumentClickHandler(towerSelectionRef, setSelectedTower, setActiveTower, setRelocatingTower);
+  useDocumentClickHandler(
+    towerSelectionRef,
+    setSelectedTower,
+    setActiveTower,
+    setRelocatingTower
+  );
   useLogPlacedTowers(placedTowers);
   useGameOverListener(setGameOver);
 
@@ -119,27 +115,25 @@ function Game() {
   };
 
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape" && relocatingTower) {
-        cancelRelocationHandler();
-      }
-    };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [relocatingTower]);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
+      if (event.target.closest(".relocation-overlay")) return;
       if (
         relocatingTower &&
         gameContainerRef.current &&
         !gameContainerRef.current.contains(event.target)
-      ) {
+      )
         cancelRelocationHandler();
-      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [relocatingTower]);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape" && relocatingTower) cancelRelocationHandler();
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
   }, [relocatingTower]);
 
   return (
@@ -162,6 +156,7 @@ function Game() {
         />
         <div className={styles.mapContainer}>
           <GameMap
+            gameResetKey={gameResetKey}
             canvasWidth={canvasWidth}
             canvasHeight={canvasHeight}
             mapName={mapName}
@@ -182,7 +177,7 @@ function Game() {
             handleCellClick={handleCellClick}
             mapMouseMoveHandler={mapMouseMoveHandler}
             mapClickHandler={mapClickHandler}
-            restrictedCellsArray={restrictedCellsArray}
+            restrictedCellsArray={getRestrictedCells(mapName, placementRules, routes)}
             activeTower={activeTower}
             onRelocate={onRelocateOption}
             onUpgrade={onUpgradeOption}
@@ -193,8 +188,10 @@ function Game() {
             setSelectedTower={setSelectedTower}
             setPreviewPos={setPreviewPos}
             setRelocatingTower={setRelocatingTower}
-            setRelocatePos={setGhostRelocatePos}
+            setGhostRelocatePos={setGhostRelocatePos}
             setPlacedTowers={setPlacedTowers}
+            isRelocateLocked={isRelocateLocked}
+            setIsRelocateLocked={setIsRelocateLocked}
           />
         </div>
       </div>

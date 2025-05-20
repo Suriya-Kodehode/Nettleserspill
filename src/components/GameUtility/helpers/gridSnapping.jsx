@@ -1,4 +1,3 @@
-
 export const snapPreviewToGrid = (preview, gridCellSize, towerDimensions) => {
   const { width, height } = towerDimensions;
   const centerX = preview.left + width / 2;

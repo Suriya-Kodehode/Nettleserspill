@@ -1,9 +1,9 @@
 export const getClickedTower = (x, y, towers, gridCellSize) => {
   for (let i = towers.length - 1; i >= 0; i--) {
     const tower = towers[i];
-    const { cols = 2, rows = 2 } = tower.gridHighlight || {};
-    const towerWidth = gridCellSize * cols;
-    const towerHeight = gridCellSize * rows;
+    const towerWidth = tower.width || gridCellSize * (tower.gridHighlight?.cols || 2);
+    const towerHeight = tower.height || gridCellSize * (tower.gridHighlight?.rows || 2);
+    
     if (
       x >= tower.left &&
       x <= tower.left + towerWidth &&

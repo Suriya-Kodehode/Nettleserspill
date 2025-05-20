@@ -8,6 +8,7 @@ import TowerOptions from "../UI/Tower/TowerOptions.jsx";
 import { finalizeRelocationUpdate } from "../GameUtility/Handlers/towerInteractionHandlers.jsx";
 
 const GameMap = ({
+  gameResetKey,
   canvasWidth,
   canvasHeight,
   mapName,
@@ -33,9 +34,36 @@ const GameMap = ({
   updatePreview,
   clearPreview,
   setRelocatingTower,
-  setRelocatePos,
+  setGhostRelocatePos,
   setPlacedTowers,
+  isRelocateLocked,
+  setIsRelocateLocked,
 }) => {
+  const handleContainerClick = (e) => {
+    if (relocatingTower && !isRelocateLocked) {
+      e.stopPropagation();
+      e.preventDefault();
+      setIsRelocateLocked(true);
+      return;
+    }
+    mapClickHandler(e);
+  };
+
+  const handleFinalizeMouseDown = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    finalizeRelocationUpdate(
+      relocatingTower,
+      relocatePos,
+      gridCellSize,
+      restrictedCellsArray,
+      setPlacedTowers,
+      setRelocatingTower,
+      setGhostRelocatePos
+    );
+    setIsRelocateLocked(false);
+  };
+
   return (
     <div
       style={{
@@ -47,15 +75,16 @@ const GameMap = ({
       }}
       onMouseMove={(e) => {
         if (selectedTower) updatePreview(e);
-        else mapMouseMoveHandler(e);
+        else mapMouseMoveHandler(e, isRelocateLocked);
       }}
       onMouseLeave={() => {
         clearPreview();
         document.body.style.cursor = "default";
       }}
-      onClick={mapClickHandler}
+      onClick={handleContainerClick}
     >
       <Canvas
+        gameResetKey={gameResetKey}
         mapName={mapName}
         sprites={sprites}
         towers={placedTowers}
@@ -78,7 +107,10 @@ const GameMap = ({
         style={{ pointerEvents: selectedTower ? "auto" : "none" }}
       />
       {showDisallowed && (
-        <DisallowedOverlay restrictedCells={restrictedCellsArray} gridCellSize={gridCellSize} />
+        <DisallowedOverlay
+          restrictedCells={restrictedCellsArray}
+          gridCellSize={gridCellSize}
+        />
       )}
       {selectedTower && previewPos && (
         <TowerPreview
@@ -96,6 +128,7 @@ const GameMap = ({
           selectedTower={relocatingTower}
           restrictedCellsArray={restrictedCellsArray}
           isRelocating={true}
+          locked={isRelocateLocked}
         />
       )}
       {activeTower && !relocatingTower && (
@@ -113,14 +146,20 @@ const GameMap = ({
           >
             <TowerRangeOverlay activeTower={activeTower} gridCellSize={gridCellSize} />
           </div>
-          <TowerOptions activeTower={activeTower} gridCellSize={gridCellSize} onRelocate={onRelocate} onUpgrade={onUpgrade} />
+          <TowerOptions
+            activeTower={activeTower}
+            gridCellSize={gridCellSize}
+            onRelocate={onRelocate}
+            onUpgrade={onUpgrade}
+          />
         </>
       )}
-      {relocatingTower && (
+      {relocatingTower && isRelocateLocked && (
         <div
+          className="relocation-overlay"
           style={{
             position: "absolute",
-            zIndex: 2,
+            zIndex: 9999,
             top: 0,
             left: 0,
             width: "100%",
@@ -129,7 +168,7 @@ const GameMap = ({
             pointerEvents: "auto",
             cursor: "crosshair",
           }}
-          onClick={(e) => {
+          onMouseDown={(e) => {
             e.stopPropagation();
             e.preventDefault();
           }}
@@ -142,22 +181,9 @@ const GameMap = ({
               transform: "translateX(-50%)",
               padding: "10px 20px",
               fontSize: "16px",
-              zIndex: 3,
-              color: "inherit"
+              zIndex: 10000,
             }}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              finalizeRelocationUpdate(
-                relocatingTower,
-                relocatePos,
-                gridCellSize,
-                restrictedCellsArray,
-                setPlacedTowers,
-                setRelocatingTower,
-                setRelocatePos
-              );
-            }}
+            onMouseDown={handleFinalizeMouseDown}
           >
             Finalize Relocation
           </button>
